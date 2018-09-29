@@ -19,11 +19,11 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
-mapboxgl.accessToken = 'MAP_TOKEN1';
+mapboxgl.accessToken = '<?php echo(MAP_TOKEN); ?>';
 var map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'style.json',
-    center: [4.3406484, 51.9204595], // starting position
+    center: [<?php echo(MAP_CENTRE); ?>], // starting position
     zoom: 13 // starting zoom
     
 });
