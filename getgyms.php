@@ -22,6 +22,8 @@
 	
 	$rows = array();
 	while($gym = $result->fetch(PDO::FETCH_ASSOC)) {
+		$gym = str_replace("\r", "", $gym);
+        	$gym = str_replace("\n", "", $gym);
 		$rows[] = $gym;
 	}
 	
