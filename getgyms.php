@@ -11,7 +11,7 @@
 		die("Connection Failed: " . $db->connect_error);
 	}
                                                                                                                                                             
-	$sql = "SELECT * FROM gyms";
+	$sql = "SELECT gym_name,lat,lon,address FROM gyms";
 
 	$result = $db->query($sql);
 	
