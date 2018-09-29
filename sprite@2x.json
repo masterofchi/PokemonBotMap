@@ -1,0 +1,51 @@
+{
+    "egg": {
+        "width": 32,
+        "height": 40,
+        "x": 16,
+        "y": 20,
+        "pixelRatio": 1
+    },
+    "raid": {
+        "width": 32,
+        "height": 40,
+        "x": 16,
+        "y": 20,
+        "pixelRatio": 1
+    },
+    "gym": {
+        "width": 20,
+        "height": 19,
+        "x": 50,
+        "y": 10,
+        "pixelRatio": 1
+    },
+    "exgym": {
+        "width": 20,
+        "height": 19,
+        "x": 10,
+        "y": 50,
+        "pixelRatio": 1
+    },
+    "poke": {
+        "width": 20,
+        "height": 20,
+        "x": 10,
+        "y": 10,
+        "pixelRatio": 1
+    },
+    "quest": {
+        "width": 32,
+        "height": 40,
+        "x": 16,
+        "y": 20,
+        "pixelRatio": 1
+    },
+    "questItem": {
+        "width": 32,
+        "height": 40,
+        "x": 16,
+        "y": 20,
+        "pixelRatio": 1
+    }
+}
