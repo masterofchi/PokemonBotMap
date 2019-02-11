@@ -60,14 +60,14 @@
 				iconSize:     [20, 20], 
 				iconAnchor:   [10, 17],
 				popupAnchor:  [-3, -10],		
-				iconUrl: 'icons/gym.png'
+				iconUrl: 'buidl/gym.png'
 			});
 	
 			var exGymIcon = L.icon({
 				iconSize:     [20, 20],
 				iconAnchor:   [10, 17], 
 				popupAnchor:  [-3, -10],	
-				iconUrl: 'icons/gymEX.png'
+				iconUrl: 'buidl/gymEX.png'
 			});
 
 			var questPokeIcon = L.Icon.extend({
@@ -75,7 +75,7 @@
 					iconSize:     [32, 32],
 					iconAnchor:   [24, 24],
 					popupAnchor:  [0, -0],
-					shadowUrl: 'icons/quests/pokestop.png',
+					shadowUrl: 'buidl/quests/pokestop.png',
 					shadowSize:   [32, 32],
 					shadowAnchor: [24, 24]
 				}
@@ -86,7 +86,7 @@
 					iconSize:     [32, 32],
 					iconAnchor:   [24, 24],
 					popupAnchor:  [0, 0],
-					shadowUrl: 'icons/quests/pokestop.png',		
+					shadowUrl: 'buidl/quests/pokestop.png',		
 					shadowSize:   [32, 32],
 					shadowAnchor: [24, 24]					
 				}
@@ -237,7 +237,7 @@
 						var stars = "<div style='font-size: 16px;'>";
 						for (var j =0; j < level; j++) {
 							//stars += String.fromCodePoint(0x2B50) + " "; //Use star emoji for level
-							stars += "<img src='icons/level.png'> "; //Use Rhydon head
+							stars += "<img src='buidl/level.png'> "; //Use Rhydon head
 						}
 						stars += "</div>";
 					} else {
@@ -264,7 +264,7 @@
 					
 					if (level == 5) {
 						if (pokedex_id == 9995) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_L5.png' })}, { title: name });
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L5.png' })}, { title: name });
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -273,7 +273,7 @@
 						raids5.addLayer(marker);
 					} else if (level == 4) {
 						if (pokedex_id == 9994) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_L4.png' })}, { title: name });	
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L4.png' })}, { title: name });	
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -282,7 +282,7 @@
 						raids4.addLayer(marker);
 					} else if (level == 3) {
 						if (pokedex_id == 9993) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_L3.png' })}, { title: name });	
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L3.png' })}, { title: name });	
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -291,7 +291,7 @@
 						raids3.addLayer(marker);
 					} else if (level == 2) {
 						if (pokedex_id == 9992) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_L2.png' })}, { title: name });	
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L2.png' })}, { title: name });	
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -300,7 +300,7 @@
 						raids2.addLayer(marker);
 					} else if (level == 1){
 						if (pokedex_id == 9991) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_L1.png' })}, { title: name });	
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L1.png' })}, { title: name });	
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -310,7 +310,7 @@
 					} else {
 						//Level is X 
 						if (remaining > 44) {
-							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'icons/egg_X.png' })}, { title: name });	
+							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_X.png' })}, { title: name });	
 						} else {
 							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
@@ -411,7 +411,7 @@
 				
 						}else{
 						    
-					pokemonIcon[i] = new questItemIcon({iconUrl: 'icons/quests/reward_type_' + reward_type + '.png'});
+					pokemonIcon[i] = new questItemIcon({iconUrl: 'buidl/quests/reward_type_' + reward_type + '.png'});
 					var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						marker.bindPopup(details, {maxWidth: '400'});
 						questitem.addLayer(marker);
