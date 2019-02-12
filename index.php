@@ -266,7 +266,7 @@
 						if (pokedex_id == 9995) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L5.png' })}, { title: name });
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -275,7 +275,7 @@
 						if (pokedex_id == 9994) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L4.png' })}, { title: name });	
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -284,7 +284,7 @@
 						if (pokedex_id == 9993) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L3.png' })}, { title: name });	
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -293,7 +293,7 @@
 						if (pokedex_id == 9992) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L2.png' })}, { title: name });	
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -302,7 +302,7 @@
 						if (pokedex_id == 9991) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_L1.png' })}, { title: name });	
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -312,7 +312,7 @@
 						if (remaining > 44) {
 							var marker = new L.Marker(location, {icon: new eggIcon({iconUrl: 'buidl/egg_X.png' })}, { title: name });	
 						} else {
-							pokemonIcon[i] = new raidIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
+							pokemonIcon[i] = new raidIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'})
 							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						}
 						marker.bindPopup(details, {maxWidth: '400'});
@@ -405,7 +405,7 @@
 						
 					if( pokedex_id && reward_type == 1 ){
 					    
-						    pokemonIcon[i] = new questPokeIcon({iconUrl: 'icons<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'});
+						    pokemonIcon[i] = new questPokeIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokedex_id +'.png'});
 					var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
 						marker.bindPopup(details, {maxWidth: '400'});
 						questpoke.addLayer(marker);
