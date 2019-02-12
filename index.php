@@ -136,7 +136,7 @@
 				map = L.map('map', {
 					center: defaultCentre, 
 					zoom: 13,
-					layers: [tiles, gyms, raidsX, raids1, raids2, raids3, raids4, raids5],
+					layers: [tiles, gyms, gymsEX, raidsX, raids1, raids2, raids3, raids4, raids5],
 					fullscreenControl: true
 				});
 				
@@ -167,12 +167,9 @@
 						}
 					
 						if (MAP_SHOW_GYMS) {
-							if (MAP_EX_IDENT != 'none') { 
-								echo('"EX Gyms": gymsEX,
-								"Other Gyms": gyms');
-							} else {
-								echo('"Gyms": gyms'); 
-							}
+							echo('"EX Gyms": gymsEX,
+							"Other Gyms": gyms');
+							
 						}
 					?>
 				};
