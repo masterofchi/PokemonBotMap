@@ -136,7 +136,7 @@
 				map = L.map('map', {
 					center: defaultCentre, 
 					zoom: 13,
-					layers: [tiles, raidsX, raids1, raids2, raids3, raids4, raids5, gyms],
+					layers: [tiles, gyms, raidsX, raids1, raids2, raids3, raids4, raids5],
 					fullscreenControl: true
 				});
 				
@@ -225,7 +225,7 @@
 						extras = parseInt(data[i].total_extras);
 						
 					var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
-						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>" + address + "</a></div>&nbsp;<br />";
+						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>Zeig mir den Weg dorthin</a></div>&nbsp;<br />";
 					var pokemon = "<div style='font-size: 18px;'><strong>" + pokemon_name + "</strong></div>";
 					
 					var times = "<div style='font-size: 14px;" + ((remaining < 20) ? " color: red;" : "") + "'>";
