@@ -344,7 +344,7 @@
 						
 						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + gym_footer + "</div>";
 						
-						if(exIdentifier != "none" && EX) {
+						if(EX) {
 							var marker = new L.Marker(location, {icon: exGymIcon}, { title: name });
 							marker.bindPopup(details, {maxWidth: '400'});
 							gymsEX.addLayer(marker);
