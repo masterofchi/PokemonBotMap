@@ -136,7 +136,7 @@
 				map = L.map('map', {
 					center: defaultCentre, 
 					zoom: 13,
-					layers: [tiles, raidsX, raids1, raids2, raids3, raids4, raids5],
+					layers: [tiles, raidsX, raids1, raids2, raids3, raids4, raids5, gyms],
 					fullscreenControl: true
 				});
 				
