@@ -50,8 +50,8 @@
 			
 			var raidIcon = L.Icon.extend({
 				options: {
-					iconSize:     [48, 48],
-					iconAnchor:   [24, 24],
+					iconSize:     [64, 64],
+					iconAnchor:   [32, 32],
 					popupAnchor:  [-3, -10] 			
 				}
 			});
@@ -136,7 +136,7 @@
 				map = L.map('map', {
 					center: defaultCentre, 
 					zoom: 13,
-					layers: [tiles, gyms, gymsEX, raidsX, raids1, raids2, raids3, raids4, raids5],
+					layers: [tiles, raidsX, raids1, raids2, raids3, raids4, raids5],
 					fullscreenControl: true
 				});
 				
@@ -220,10 +220,22 @@
 						interest = data[i].interest,
 						raiders = parseInt(data[i].count),
 						extras = parseInt(data[i].total_extras);
+					    move_1 = data[i].move_1;
+					    move_2 = data[i].move_2;
+					    attendees = data[i].raiders;
+
+					var attendance = ""; 
+				    if(typeof attendees !==undefined){
+				    	for(var value in attendees) {
+				    		attendance += "<div style='font-size: 12px;'>"+ attendees[value].attend_time + " / " + attendees[value].pokemon_name + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
+				    		}
+					}
 						
 					var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
 						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>Zeig mir den Weg dorthin</a></div>&nbsp;<br />";
 					var pokemon = "<div style='font-size: 18px;'><strong>" + pokemon_name + "</strong></div>";
+					var moves = "";
+					var moves = "<div style='font-size: 12px;'>"+ move_1 +"/"+ move_2 +"</div>&nbsp;<br />";
 					
 					var times = "<div style='font-size: 14px;" + ((remaining < 20) ? " color: red;" : "") + "'>";
 					times += (level == "X") ? "<strong>" + start_time.toLocaleDateString() + "</strong><br>" : "";
@@ -243,9 +255,7 @@
 					
 					var attending = "";
 					if (interest) { 
-						attending += "<div style='font-size: 14px;'>" + String.fromCodePoint(0x1f465) + " Interested: ";
-						attending += ((extras) ? (raiders + extras) : raiders);
-						attending += "</div>";
+						attending += "<div style='font-size: 14px;'>" + String.fromCodePoint(0x1f465) + " Interessenten: ";
 					}
 					
 					var raid_footer = "";
@@ -257,7 +267,7 @@
 
 					var raidID = "<div style='font-size: 10px;'><br/>[Raid ID: " + data[i].id + "]</div>";
 					
-					var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + pokemon + stars + times + attending + raid_footer + raidID + "</div>";
+					var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + pokemon + moves + stars + times + attending + attendance + raid_footer + raidID + "</div>";
 					
 					if (level == 5) {
 						if (pokedex_id == 9995) {
