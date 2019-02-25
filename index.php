@@ -56,11 +56,32 @@
 				}
 			});
 			
-			var gymIcon = L.icon({
+			var gymIconGrey = L.icon({
 				iconSize:     [20, 20], 
 				iconAnchor:   [10, 17],
 				popupAnchor:  [-3, -10],		
 				iconUrl: 'buidl/gym.png'
+			});
+
+			var gymIconBlue = L.icon({
+				iconSize:     [20, 20], 
+				iconAnchor:   [10, 17],
+				popupAnchor:  [-3, -10],		
+				iconUrl: 'buidl/mystic64x.png'
+			});
+			
+			var gymIconRed = L.icon({
+				iconSize:     [20, 20], 
+				iconAnchor:   [10, 17],
+				popupAnchor:  [-3, -10],		
+				iconUrl: 'buidl/valor64x.png'
+			});
+			
+			var gymIconYellow = L.icon({
+				iconSize:     [20, 20], 
+				iconAnchor:   [10, 17],
+				popupAnchor:  [-3, -10],		
+				iconUrl: 'buidl/instinct64x.png'
 			});
 	
 			var exGymIcon = L.icon({
@@ -136,7 +157,7 @@
 				map = L.map('map', {
 					center: defaultCentre, 
 					zoom: 13,
-					layers: [tiles, raidsX, raids1, raids2, raids3, raids4, raids5],
+					layers: [tiles, gyms, raidsX, raids1, raids2, raids3, raids4, raids5],
 					fullscreenControl: true
 				});
 				
@@ -203,6 +224,62 @@
 				getQuestPoke();
 				timeOut=setTimeout("updateRaids()",60000);
 			}
+
+			function getGyms() {
+				$.getJSON("getgyms.php", function (data) {
+					for (var i = 0; i < data.length; i++) {
+						var location = new L.LatLng(data[i].lat, data[i].lon),
+							gym_name = data[i].gym_name,
+							address = data[i].address;
+							ex_gym = data[i].ex_gym;
+							team = data[i].team;
+							slots_available = data[i].slots_available;
+							since = data[i].since;
+							if(ex_gym == 1) {
+								//Is EX Gym
+								var EX=true;
+							} else { 
+								var EX=false; 
+							}
+
+    						var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
+    						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>" + address + "</a></div>&nbsp;<br />";
+
+    						var slots_occupied = 6 - parseInt(slots_available);
+    						
+    						var slots_info = "<div style='font-size: 12px;'>" + "Plätze belegt:  "+ slots_occupied + "/6" + "</div><br />";
+    						
+    						var gym_footer = "<div style='font-size: 12px;'><?php if (defined('MAP_GYM_FOOTER') && !empty(MAP_GYM_FOOTER)) { echo(MAP_GYM_FOOTER); } ?></div>";
+    						
+    						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + slots_info + gym_footer + "</div>";
+    						
+    						if(EX) {
+    							var marker = new L.Marker(location, {icon: exGymIcon}, { title: name });
+    							marker.bindPopup(details, {maxWidth: '400'});
+    							gymsEX.addLayer(marker);
+    						} else {
+    							switch(team){
+    								case "0":
+    									var marker = new L.Marker(location, {icon: gymIconGrey}, { title: slots_info });
+    									break;
+    								case "1":
+    									var marker = new L.Marker(location, {icon: gymIconBlue}, { title: slots_info });
+    									break;
+    								case "2":
+    									var marker = new L.Marker(location, {icon: gymIconRed}, { title: slots_info });
+    									break;
+    								case "3":
+    									var marker = new L.Marker(location, {icon: gymIconYellow}, { title: slots_info });
+    									break;
+    							}
+    							marker.bindPopup(details, {maxWidth: '400'});
+    							gyms.addLayer(marker);							
+    						}
+    						
+    	
+    					}
+				});
+			}
 					
 			function getRaids() {
 				$.getJSON("getraids.php", function (data) {
@@ -227,7 +304,7 @@
 					var attendance = ""; 
 				    if(typeof attendees !==undefined){
 				    	for(var value in attendees) {
-				    		attendance += "<div style='font-size: 12px;'>"+ attendees[value].attend_time + " / " + attendees[value].pokemon_name + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
+				    		attendance += "<div style='font-size: 12px;'>" + "&#10551;" + attendees[value].attend_time + " / " + attendees[value].pokemon_name + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
 				    		}
 					}
 						
@@ -235,7 +312,9 @@
 						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>Zeig mir den Weg dorthin</a></div>&nbsp;<br />";
 					var pokemon = "<div style='font-size: 18px;'><strong>" + pokemon_name + "</strong></div>";
 					var moves = "";
-					var moves = "<div style='font-size: 12px;'>"+ move_1 +"/"+ move_2 +"</div>&nbsp;<br />";
+					if(move_1){
+						moves += "<div style='font-size: 12px;'>"+ move_1 +"/"+ move_2 +"</div>&nbsp;<br />";
+					}
 					
 					var times = "<div style='font-size: 14px;" + ((remaining < 20) ? " color: red;" : "") + "'>";
 					times += (level == "X") ? "<strong>" + start_time.toLocaleDateString() + "</strong><br>" : "";
@@ -330,41 +409,7 @@
 				});
 			}		
 			
-			function getGyms() {
-				$.getJSON("getgyms.php", function (data) {
-					for (var i = 0; i < data.length; i++) {
-						var location = new L.LatLng(data[i].lat, data[i].lon),
-							gym_name = data[i].gym_name,
-							address = data[i].address;
-							ex_gym = data[i].ex_gym;
-							if(ex_gym == 1) {
-								//Is EX Gym
-								var EX=true;
-							} else { 
-								var EX=false; 
-							}
-							
-						var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
-						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>" + address + "</a></div>&nbsp;<br />";
-						
-						var gym_footer = "<div style='font-size: 12px;'><?php if (defined('MAP_GYM_FOOTER') && !empty(MAP_GYM_FOOTER)) { echo(MAP_GYM_FOOTER); } ?></div>";
-						
-						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + gym_footer + "</div>";
-						
-						if(EX) {
-							var marker = new L.Marker(location, {icon: exGymIcon}, { title: name });
-							marker.bindPopup(details, {maxWidth: '400'});
-							gymsEX.addLayer(marker);
-						} else {
-							var marker = new L.Marker(location, {icon: gymIcon}, { title: name });	
-							marker.bindPopup(details, {maxWidth: '400'});
-							gyms.addLayer(marker);							
-						}
-						
-	
-					}
-				});
-			}
+			
 			
 			function getQuestPoke() {
 			    

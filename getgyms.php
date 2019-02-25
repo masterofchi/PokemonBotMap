@@ -9,7 +9,20 @@
   $rows = array();  
   try {
 
-    $sql = "SELECT * FROM gyms";
+    $sql = "SELECT 
+                gyms.lat,
+                gyms.lon,
+                gyms.gym_name,
+                gyms.address,
+                gyms.ex_gym,
+                team.team as team,
+                team.slots_available,
+                SEC_TO_TIME(TIMESTAMPDIFF(SECOND,FROM_UNIXTIME(team.last_modified),CURRENT_TIMESTAMP())) as since
+            FROM
+                gyms,
+                mapadroid.gym_team AS team
+            WHERE
+                gyms.gym_name = team.name";
     $result = $dbh->query($sql);
     
     while($gym = $result->fetch(PDO::FETCH_ASSOC)) {
