@@ -36,7 +36,7 @@
 			var autoLocate = <?php echo(MAP_AUTOLOCATE); ?>; 
 			var exIdentifier = '<?php echo(MAP_EX_IDENT); ?>';
 		
-			var map, tiles, darkTiles, outdoorsTiles, satelliteTiles, raids1, raids2, raids3, raids4, raids5, raidsX, gyms, gymsEX, questpoke, questitem;
+			var map, tiles, darkTiles, outdoorsTiles, satelliteTiles, raids1, raids2, raids3, raids4, raids5, raidsX, gyms, gymsEX, questpoke, questitem, pokemon;
 			var firstLoad=true;
 			var pokemonIcon = [];
 			
@@ -49,6 +49,14 @@
 			});
 			
 			var raidIcon = L.Icon.extend({
+				options: {
+					iconSize:     [64, 64],
+					iconAnchor:   [32, 32],
+					popupAnchor:  [-3, -10] 			
+				}
+			});
+
+			var pokemonIcon = L.Icon.extend({
 				options: {
 					iconSize:     [64, 64],
 					iconAnchor:   [32, 32],
@@ -125,6 +133,7 @@
 				raidsX = new L.FeatureGroup();
 				questpoke = new L.FeatureGroup();
 				questitem = new L.FeatureGroup();
+				pokemon = new L.FeatureGroup();
 				
 				tiles = new L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 				 attribution: '<a href="http://openstreetmap.org">OpenStreetMap</a> | <a href="http://mapbox.com">Mapbox</a>',
@@ -189,8 +198,11 @@
 					
 						if (MAP_SHOW_GYMS) {
 							echo('"EX Gyms": gymsEX,
-							"Other Gyms": gyms');
+							"Other Gyms": gyms,');
 							
+						}
+						if (MAP_SHOW_POKEMON) {
+						    echo '"Pokemon": pokemon';
 						}
 					?>
 				};
@@ -208,20 +220,20 @@
 			});
 			
 			function updateRaids() {
-				//Clear map, get latest data and set timer to update again in 60 seconds.
-				if(firstLoad) {
-					firstLoad = false;
-					<?php if(MAP_SHOW_GYMS) { echo ('getGyms();'); } ?>
-				}
+
 				raids1.clearLayers();
 				raids2.clearLayers();
 				raids3.clearLayers();
 				raids4.clearLayers();
 				raids5.clearLayers();
-				getRaids();
 				questpoke.clearLayers();
 				questitem.clearLayers();
-				getQuestPoke();
+				pokemon.clearLayers();
+				gyms.clearLayers();
+				gymsEX.clearLayers();
+				getGyms();
+				getRaids();
+				getPokemon();
 				timeOut=setTimeout("updateRaids()",60000);
 			}
 
@@ -235,6 +247,7 @@
 							team = data[i].team;
 							slots_available = data[i].slots_available;
 							since = data[i].since;
+							image_link = data[i].image_link
 							if(ex_gym == 1) {
 								//Is EX Gym
 								var EX=true;
@@ -242,16 +255,18 @@
 								var EX=false; 
 							}
 
+							var gym_image ="<img src=" + image_link + " alt=" + gym_name + " height=\"64\" width=\"64\" style=\"border-radius: 50%;\">";
+
     						var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
     						gym_info += "<div style='font-size: 12px;'><a href='https://www.google.com/maps/search/?api=1&query=" + data[i].lat + "," + data[i].lon + "' target='_blank' title='Click to find " + gym_name + " on Google Maps'>" + address + "</a></div>&nbsp;<br />";
 
     						var slots_occupied = 6 - parseInt(slots_available);
     						
-    						var slots_info = "<div style='font-size: 12px;'>" + "Pl‰tze belegt:  "+ slots_occupied + "/6" + "</div><br />";
+    						var slots_info = "<div style='font-size: 12px;'>" + "Pl√§tze belegt:  "+ slots_occupied + "/6" + "</div><br />";
     						
     						var gym_footer = "<div style='font-size: 12px;'><?php if (defined('MAP_GYM_FOOTER') && !empty(MAP_GYM_FOOTER)) { echo(MAP_GYM_FOOTER); } ?></div>";
     						
-    						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ gym_info + slots_info + gym_footer + "</div>";
+    						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>" + gym_image + gym_info + slots_info + gym_footer + "</div>";
     						
     						if(EX) {
     							var marker = new L.Marker(location, {icon: exGymIcon}, { title: name });
@@ -290,6 +305,7 @@
 						address = data[i].address,
 						pokemon_name = data[i].pokemon_name,
 						pokedex_id = data[i].pokedex_id,
+						pokemon_form = data[i].pokemon_form,
 						level = data[i].raid_level,
 						start_time = new Date((data[i].start_time).replace(/-/g,"/")),
 						end_time = new Date((data[i].end_time).replace(/-/g,"/")),
@@ -473,6 +489,22 @@
 						
 
 					}
+				});
+			}
+
+			function getPokemon() {
+				$.getJSON("getpokemon.php", function (data) {
+					for (var i = 0; i < data.length; i++) {
+						var location = new L.LatLng(data[i].lat, data[i].lon),
+							pokemon_id = data[i].pokemon_id,
+							tth = data[i].tth;
+    						
+    						var details = "<div style='text-align: center; margin-left: auto; margin-right: auto;'>"+ "Noch "+ tth +"</div>";
+    						pokemonIcon[i] = new pokemonIcon({iconUrl: 'buidl<?php echo("/" . MAP_ICONPACK); ?>/id_' + pokemon_id +'.png'})
+							var marker = new L.Marker(location, {icon: pokemonIcon[i] }, { title: name });
+							marker.bindPopup(details, {maxWidth: '400'});
+							pokemon.addLayer(marker);						
+    					}
 				});
 			}
 			
