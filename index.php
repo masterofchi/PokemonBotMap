@@ -333,11 +333,11 @@
 				    	for(var value in attendees) {
 				    	   var attendance_pokemon = attendees[value].pokemon_name;
                            
-				    	   if(localized_pokemon_names.length > 0 && pokedex_id < 9991){
+				    	   if(localized_pokemon_names.length > 0){
 				    	       attendance_pokemon = localized_pokemon_names[attendees[value].pokedex_id];
 				    	   }
                            
-				    		attendance += "<div style='font-size: 12px;'>" + attendance_pokemon + "&#10551;" + attendees[value].attend_time + " / " +  + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
+				    		attendance += "<div style='font-size: 12px;'>" + "&#10551;" + attendees[value].attend_time + " / " + attendance_pokemon + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
 			    		}
 					}
 						
