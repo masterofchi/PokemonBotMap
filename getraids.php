@@ -42,6 +42,7 @@ $sql_raiders = "
         attendance.raid_id,
         (CASE WHEN DATE_FORMAT(attendance.attend_time, '%H:%i') = '01:00' THEN 'Jederzeit' ELSE DATE_FORMAT(attendance.attend_time, '%H:%i') END) as attend_time,
         (CASE WHEN pokemon.pokemon_name = 'Any' THEN 'Pokemon egal' ELSE pokemon.pokemon_name END) as pokemon_name,
+        (CASE WHEN pokemon.pokemon_name = 'Any' THEN 0 ELSE pokemon.pokedex_id END) as pokedex_id,
         SUM(attendance.extra_valor + attendance.extra_instinct + attendance.extra_mystic) + count(*) AS raiders
     FROM
         attendance,
