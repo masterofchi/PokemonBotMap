@@ -211,16 +211,23 @@
 				map.addControl(new L.Control.Scale());
 					
 			})();
-			
+            
+            var localized_pokemon_names; 			
 				
 			$(document).ready(function() {
 			  $.ajaxSetup({cache:false});
-			 
+                getLocalizedPokemonNames()
 				updateRaids();
 			});
+            
+            function getLocalizedPokemonNames(){
+                $.getJSON('tr/pokemon_<?php echo(strtolower(LANGUAGE)) ?>.json', function(data){ 
+                    localized_pokemon_names = ["Pokemon egal"]; 
+                    localized_pokemon_names = localized_pokemon_names.concat(data); 
+                });
+            }
 			
 			function updateRaids() {
-
 				raids1.clearLayers();
 				raids2.clearLayers();
 				raids3.clearLayers();
@@ -316,12 +323,22 @@
 					    move_1 = data[i].move_1;
 					    move_2 = data[i].move_2;
 					    attendees = data[i].raiders;
+                        
+                    if(localized_pokemon_names.length > 0){
+                        pokemon_name = localized_pokemon_names[pokedex_id];
+                    }
 
 					var attendance = ""; 
 				    if(typeof attendees !==undefined){
 				    	for(var value in attendees) {
-				    		attendance += "<div style='font-size: 12px;'>" + "&#10551;" + attendees[value].attend_time + " / " + attendees[value].pokemon_name + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
-				    		}
+				    	   var attendance_pokemon = attendees[value].pokemon_name;
+                           
+				    	   if(localized_pokemon_names.length > 0){
+				    	       attendance_pokemon = localized_pokemon_names[attendees[value].pokedex_id];
+				    	   }
+                           
+				    		attendance += "<div style='font-size: 12px;'>" + attendance_pokemon + "&#10551;" + attendees[value].attend_time + " / " +  + " / Teilnehmer: "+ attendees[value].raiders +"</div>";
+			    		}
 					}
 						
 					var gym_info = "<div style='font-size: 18px; color: #0078A8;'>"+ gym_name +"</div>";
