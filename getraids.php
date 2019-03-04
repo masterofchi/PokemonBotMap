@@ -42,7 +42,8 @@ $sql_raiders = "
         attendance.raid_id,
         (CASE WHEN DATE_FORMAT(attendance.attend_time, '%H:%i') = '01:00' THEN 'Jederzeit' ELSE DATE_FORMAT(attendance.attend_time, '%H:%i') END) as attend_time,
         (CASE WHEN pokemon.pokemon_name = 'Any' THEN 'Pokemon egal' ELSE pokemon.pokemon_name END) as pokemon_name,
-        count(attendance.extra_valor + attendance.extra_instinct + attendance.extra_mystic + 1) AS raiders
+        (CASE WHEN pokemon.pokemon_name = 'Any' THEN 0 ELSE pokemon.pokedex_id END) as pokedex_id,
+        SUM(attendance.extra_valor + attendance.extra_instinct + attendance.extra_mystic) + count(*) AS raiders
     FROM
         attendance,
 		pokemon,
@@ -51,7 +52,8 @@ $sql_raiders = "
     	pokemon.pokedex_id = REPLACE(attendance.pokemon, '-normal', '') AND
         raids.id = attendance.raid_id AND
         raids.end_time > NOW() AND
-        raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour
+        raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour AND
+		attendance.cancel = 0
     GROUP BY attendance.raid_id, attendance.attend_time, attendance.pokemon
     ORDER BY attendance.raid_id, attendance.attend_time ASC";
 

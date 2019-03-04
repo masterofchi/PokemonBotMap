@@ -17,7 +17,8 @@
                 gyms.ex_gym,
                 team.team as team,
                 team.slots_available,
-                SEC_TO_TIME(TIMESTAMPDIFF(SECOND,FROM_UNIXTIME(team.last_modified),CURRENT_TIMESTAMP())) as since
+                SEC_TO_TIME(TIMESTAMPDIFF(SECOND,FROM_UNIXTIME(team.last_modified),CURRENT_TIMESTAMP())) as since,
+                team.image_link as image_link
             FROM
                 gyms,
                 mapadroid.gym_team AS team
