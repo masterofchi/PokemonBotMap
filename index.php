@@ -212,7 +212,7 @@
 					
 			})();
             
-            var localized_pokemon_names; 			
+            var localized_pokemon_names = []; 			
 				
 			$(document).ready(function() {
 			  $.ajaxSetup({cache:false});
@@ -222,7 +222,7 @@
             
             function getLocalizedPokemonNames(){
                 $.getJSON('tr/pokemon_<?php echo(strtolower(LANGUAGE)) ?>.json', function(data){ 
-                    localized_pokemon_names = ["Pokemon egal"]; 
+                    localized_pokemon_names = ["Pokemon egal"]; // FIXME: this needs to be localizable
                     localized_pokemon_names = localized_pokemon_names.concat(data); 
                 });
             }
