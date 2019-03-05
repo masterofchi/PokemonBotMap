@@ -30,6 +30,19 @@
                     },
                     trackUserLocation: true
                 }), 'top-left');
+                
+                $.get('templates/popup.html', function(data){
+                    var el = document.createElement('div');
+                    el.id = 'marker';
+                    el.style = 'background-color: #FF0000; width: 10px; height: 10px;';
+                    
+                    var popup = new mapboxgl.Popup({ offset: 25 }).setHTML(data);
+    
+                    new mapboxgl.Marker(el)
+                        .setLngLat(constants.mapbox_map_center)
+                        .setPopup(popup) // sets a popup on this marker
+                        .addTo(map);
+                });
             });
         </script>
     </head>
