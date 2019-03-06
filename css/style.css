@@ -1,5 +1,89 @@
-html { height: 100% }
+html {
+	height: 100%
+}
 
-body { height: 100%; margin: 0; padding: 0;}
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
 
-#map {  position:absolute; top:0; bottom:0; width:100%;  }
+#map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+#layer_settings, #layer_settings * {
+	cursor: pointer;
+}
+
+#layer_settings ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0.7em;
+	min-width: 26px;
+	min-height: 26px;
+	background: url('../buidl/layers.png');
+}
+
+#layer_settings ul li {
+	display: none;
+}
+
+#layer_settings:hover ul {
+	background-image: none;
+}
+
+#layer_settings:hover ul li {
+	display: block;
+}
+
+.gym_popup {
+	width: 250px;
+	text-align: center;
+}
+
+.gym_team_1 {
+	background: url('../buidl/mystic_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_team_2 {
+	background: url('../buidl/valor_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_team_3 {
+	background: url('../buidl/instinct_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_image {
+	padding: 25px;
+}
+
+.gym_image img {
+	height: 150px;
+	width: 150px;
+	padding: 5px;
+	border-radius: 50%;
+	border: 1px solid;
+	background-color: rgba(255, 255, 255, .7);
+}
+
+.gym_info {
+	background-color: rgba(255, 255, 255, .7);
+	padding: 3px;
+	border-radius: 3px;
+	border: 1px solid;
+}
+
+.gym_name{
+	font-weight: bold;
+	font-size: large;
+}
