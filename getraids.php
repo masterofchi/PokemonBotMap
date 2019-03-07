@@ -32,7 +32,7 @@ $sql_raids = "
       mapadroid.gym_team.team as team,
       mapadroid.gym_team.image_link as image_link
     FROM raids
-      LEFT JOIN pokemon ON pokemon.pokedex_id=raids.pokemon
+      LEFT JOIN pokemon ON pokemon.pokedex_id=raids.pokemon  AND pokemon.pokemon_form = SUBSTRING_INDEX(raids.pokemon, '-', -1)
       LEFT JOIN attendance ON attendance.raid_id=raids.id
       LEFT JOIN gyms ON gyms.id = raids.gym_id
       LEFT JOIN moves on moves.id = raids.gym_id
