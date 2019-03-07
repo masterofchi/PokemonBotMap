@@ -15,7 +15,7 @@ if(settings == null){
 			'show_exgyms',
 			'show_gyms'
 		]
-	};
+    };
 }
 	 
 $(document).ready(function(){	 
@@ -38,13 +38,16 @@ $(document).ready(function(){
     // Preload popup HTML templates
     var raidPopupHtml;
     var gymPopupHtml;
+    var attendanceHtml;
     
     var raidPopupPromise = $.get('templates/raid_popup.html');
     var gymPopupPromise = $.get('templates/gym_popup.html');
+    var attendancePromise = $.get('templates/raid_attendance.html');
 
-    $.when(raidPopupPromise, gymPopupPromise).done(function(raidData, gymData) {
+    $.when(raidPopupPromise, gymPopupPromise, attendancePromise).done(function(raidData, gymData, attendanceData) {
 		raidPopupHtml = raidData[0];
 		gymPopupHtml = gymData[0];
+        attendanceHtml = attendanceData[0];
     });
     
     // Setup style settings
@@ -106,8 +109,8 @@ $(document).ready(function(){
 	   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 2)) : null;
 	   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 1)) : null;
 	   		
-	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(gym_data[0].filter(gym => gym.ex_gym == 1), raid_data[0].filter(raid => raid.raid_level == 0), settings.layers.includes('show_exraids') ? ['0'] : []) : null;
-	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(gym_data[0].filter(gym => gym.ex_gym == 0), raid_data[0].filter(raid => raid.raid_level != 0), settings.layers.filter(layer => layer.startsWith('show_raids')).map(layer => layer.substr(layer.length - 1, layer.length))) : null;
+	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], true)) : null;
+	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], false)) : null;
 	   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data[0]) : null;
 	   		
 	   		updateMap();
@@ -116,47 +119,99 @@ $(document).ready(function(){
 	   	window.setTimeout(updateData, 60000);
     };
     
+    var filterGyms = function(gyms, raids, filterForExGyms){
+        var result = gyms;
+        var show_raid_levels = settings.layers.map(layer => layer == 'show_exraids' ? '0' : layer.substr(layer.length - 1, layer.length));
+        
+        if(filterForExGyms){
+            result = gyms.filter(gym => gym.ex_gym == 1)
+        }
+        else{
+            result = gyms.filter(gym => gym.ex_gym == 0);
+        }        
+            
+        return result.filter(gym => raids.filter(raid => show_raid_levels.includes(raid.raid_level) && raid.gym_id == gym.id).length == 0);
+    }        
+    
     var buildRaidLayerJson = function(raids){
-    	return raids.map(function(raid){
-    		return {
+    	return raids
+            .map(raid => prepareRaidRendering(raid))
+            .map(raid => {
+        		return {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [raid.lon, raid.lat]
+                    },
+                    'properties': {
+                        'title': raid.pokemon_name,
+                        'description': renderTemplate(raidPopupHtml, raid),
+                        'icon': loadPokemonIcon(raid.pokedex_id, raid.raid_level)
+                    }
+        		}
+        	});
+    }
+    
+    var prepareRaidRendering = function(raid) {
+        raid.ts_start_string = new Date(raid.ts_start * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        raid.ts_end_string = new Date(raid.ts_end * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        var remaining = [];
+        
+        if(raid.t_left > 3600){
+            var hours = Math.floor(raid.t_left / 3600);
+            remaining.push(hours + ' Stunde' + (hours != 1 ? 'n' : ''));
+            raid.t_left -= hours * 3600;
+        }
+        
+        if(raid.t_left > 60){
+            var minutes = Math.floor(raid.t_left / 60);
+            remaining.push(minutes + ' Minute' + (minutes != 1 ? 'n' : ''));
+            raid.t_left -= minutes * 60;
+        }
+        
+        var seconds = raid.t_left;
+        remaining.push(seconds + ' Sekunde' + (seconds != 1 ? 'n' : ''));
+        
+        raid.t_left_string = remaining.join(', ');
+        
+        if(raid.raiders == null){
+            raid.raiders_set = 0;
+        }
+        else{
+            raid.raiders_set = 1;            
+            raid.raiders_string = '';
+            
+            for (const key in raid.raiders) {
+                raid.raiders_string += renderTemplate(attendanceHtml, raid.raiders[key]);
+            };
+        }
+        
+        return raid;
+    }
+    
+    var buildGymLayerJson = function(gyms) {
+		return gyms.map(gym => { 
+			return {
                 'type': 'Feature',
                 'geometry': {
                     'type': 'Point',
-                    'coordinates': [raid.lon, raid.lat]
+                    'coordinates': [gym.lon, gym.lat]
                 },
                 'properties': {
-                    'title': raid.pokemon_name,
-                    'description': renderPopup(raidPopupHtml, raid),
-                    'icon': loadPokemonIcon(raid.pokedex_id, raid.raid_level)
+                    'title': gym.gym_name,
+                    'description': renderTemplate(gymPopupHtml, gym),
+                    'icon': (gym.team == 1 ? 'mystic' : (gym.team == 2 ? 'valor' : 'instinct'))
                 }
-    		}
-    	});
-    }
-    
-    var buildGymLayerJson = function(gyms, raids, raid_levels){
-    	return gyms
-    			.filter(gym => raids.filter(raid => raid.gym_id == gym.id && raid_levels.includes(raid.raid_level)).length == 0)
-    			.map(function(gym){ 
-    				return {
-	                    'type': 'Feature',
-	                    'geometry': {
-	                        'type': 'Point',
-	                        'coordinates': [gym.lon, gym.lat]
-	                    },
-	                    'properties': {
-	                        'title': gym.gym_name,
-	                        'description': renderPopup(gymPopupHtml, gym),
-	                        'icon': (gym.team == 1 ? 'mystic' : (gym.team == 2 ? 'valor' : 'instinct'))
-	                    }
-    				}
-				});
+  			}
+		});
     }
     
     var buildPokemonLayerJson = function(pokemon){
     	return pokemon;
     }
     
-    var renderPopup = function(template, obj){
+    var renderTemplate = function(template, obj){
     	var result = template;
     	
     	for (const key in obj){
@@ -167,6 +222,8 @@ $(document).ready(function(){
     }
     
     var updateMap = function(){
+        loadImages();
+        
     	if(!map.isStyleLoaded()){
     		window.setTimeout(updateMap, 100);
     		return;
@@ -196,7 +253,7 @@ $(document).ready(function(){
 	    				  'source': key,
 	    				  'layout': {
 	    					  'icon-image': '{icon}',
-	    					  'icon-size': 0.4,
+	    					  'icon-size': 0.25,
 	    					  'icon-allow-overlap': true
 	    				  }
 					  });
@@ -212,45 +269,36 @@ $(document).ready(function(){
     	var icons = [
     		{
     			'name' : 'instinct',
-    			'src' : 'buidl/instinct64x.png'
+    			'src' : 'buidl/instinct.png'
     		},
     		{
     			'name' : 'mystic',
-    			'src' : 'buidl/mystic64x.png'
+    			'src' : 'buidl/mystic.png'
     		},
     		{
     			'name' : 'valor',
-    			'src' : 'buidl/valor64x.png'
+    			'src' : 'buidl/valor.png'
     		}
     	];
     	
-    	icons.forEach(icon => {
+        icons.forEach(icon => {
             map.loadImage(icon.src, function(error, image){
-            	map.addImage(icon.name, image);
+                if(!map.hasImage(icon.name)){
+                    map.addImage(icon.name, image);
+                }
             });
-    	});
+        });
     }
     
     var loadPokemonIcon = function(pokedex_id, raid_level) {    	
     	var name = 'icon_pokedex_' + pokedex_id;
     	var url = 'buidl/pogoassets/id_' + pokedex_id + '.png';
     	
-    	if(pokedex_id > 9990){
-    		if(raid_level > 0){
-				name = 'icon_egg_l' + raid_level;
-				url = 'buidl/egg_L' + raid_level + '.png';
-    		}
-    		else{
-				name = 'icon_egg_X';
-				url = 'buidl/egg_X.png';   			
-    		}
-    	}
-    	
-    	if(!map.hasImage(name)){
-	    	map.loadImage(url, function(error, image){
+	    map.loadImage(url, function(error, image){
+    	   if(!map.hasImage(name)){
 	        	map.addImage(name, image);
-	        });
-    	}
+    	   }
+        });
     	
     	return name;
     }
@@ -260,7 +308,7 @@ $(document).ready(function(){
     });
     
     map.on('style.load', function() {  
-    	loadImages();
+    	updateMap();
     	updateData();
     });
     

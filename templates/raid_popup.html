@@ -1,28 +1,36 @@
-<div class="raid_popup">
-    <div class="raid_gym_name">
-        ##gym_name##
+<div class="raid_popup gym_team_##gym_team##">
+    <div class="raid_image">
+        <img src="buidl/pogoassets/id_##pokedex_id##.png" style="background-image: url('##image_link##');" />
     </div>
-    <div class="raid_navigation">
-        <a href="https://www.google.com/maps/search/?api=1&amp;query=##lat##,##lon##" target="_blank" title="Finde ##gym_name## auf Google Maps">Zeig mir den Weg dorthin</a>
-    </div>
-    <div class="raid_boss">
-        ##pokemon_name##
-    </div>
-    <div class="raid_level raid_level_##raid_level##">
-    </div>
-    <div class="raid_time">
-        &#9200; ##ts_start## - ##ts_end## (Noch ##t_left##)
-    </div>
-    <div class="raid_attendees">
-        &#128101; Interessenten:
-        <p class="raid_attendance">
-            &#8627; 17:15 / Pokemon egal / Teilnehmer: 5
-        </p>
-    </div>
-    <div class="raid_join">
-        <a href="https://t.me/PoGoRaidsHochzollFdb/129" target="_blank" title="Klicken und f&uuml;r den Raid anmelden">Zum Raid anmelden</a>
-    </div>
-    <div class="raid_id">
-        [Raid ID: ##id##]
+    <div class="raid_info">
+        <div class="raid_gym_name">
+            ##gym_name##
+        </div>
+        <div class="raid_navigation">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=##lat##,##lon##" target="_blank" title="Finde ##gym_name## auf Google Maps">Zeig mir den Weg dorthin</a>
+        </div>
+        <hr />
+        <div class="raid_boss">
+            <div class="raid_level raid_level_##raid_level##"></div>
+            ##pokemon_name##
+        </div>
+        <hr />
+        <div class="raid_time">
+            ##ts_start_string## - ##ts_end_string##
+            <br />
+            Noch ##t_left_string##
+        </div>
+        <hr />
+        <div class="raid_attendees raid_attendees_##raiders_set##">
+            Interessenten
+            ##raiders_string##
+        </div>
+        <hr class="raid_attendees_##raiders_set##" />
+        <div class="raid_join">
+            <a href="https://t.me/PoGoRaidsHochzollFdb/129" target="_blank" title="Klicken und f&uuml;r den Raid anmelden">Zum Raid anmelden</a>
+        </div>
+        <div class="raid_id">
+            [Raid ID: ##id##]
+        </div>
     </div>
 </div>
