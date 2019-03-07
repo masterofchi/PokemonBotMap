@@ -38,15 +38,18 @@ $(document).ready(function(){
     // Preload popup HTML templates
     var raidPopupHtml;
     var gymPopupHtml;
+    var pokemonPopupHtml
     var attendanceHtml;
     
     var raidPopupPromise = $.get('templates/raid_popup.html');
     var gymPopupPromise = $.get('templates/gym_popup.html');
+    var pokemonPopupPromise = $.get('templates/pokemon_popup.html');
     var attendancePromise = $.get('templates/raid_attendance.html');
 
-    $.when(raidPopupPromise, gymPopupPromise, attendancePromise).done(function(raidData, gymData, attendanceData) {
+    $.when(raidPopupPromise, gymPopupPromise, pokemonPopupPromise, attendancePromise).done(function(raidData, gymData, pokemonData, attendanceData) {
 		raidPopupHtml = raidData[0];
 		gymPopupHtml = gymData[0];
+        pokemonPopupHtml = pokemonData[0];
         attendanceHtml = attendanceData[0];
     });
     
@@ -135,7 +138,7 @@ $(document).ready(function(){
     
     var buildRaidLayerJson = function(raids){
     	return raids
-            .map(raid => prepareRaidRendering(raid))
+            .map(raid => prepareRaidForRendering(raid))
             .map(raid => {
         		return {
                     'type': 'Feature',
@@ -146,13 +149,13 @@ $(document).ready(function(){
                     'properties': {
                         'title': raid.pokemon_name,
                         'description': renderTemplate(raidPopupHtml, raid),
-                        'icon': loadPokemonIcon(raid.pokedex_id, raid.raid_level)
+                        'icon': loadPokemonIcon(raid.pokedex_id)
                     }
         		}
         	});
     }
     
-    var prepareRaidRendering = function(raid) {
+    var prepareRaidForRendering = function(raid) {
         raid.ts_start_string = new Date(raid.ts_start * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         raid.ts_end_string = new Date(raid.ts_end * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         
@@ -187,6 +190,13 @@ $(document).ready(function(){
             };
         }
         
+        if(raid.move_1 != null && raid.move_2 != null){
+            raid.raid_moves_present = 1;
+        }
+        else{
+            raid.raid_moves_present = 0;
+        }
+        
         return raid;
     }
     
@@ -207,8 +217,39 @@ $(document).ready(function(){
 		});
     }
     
-    var buildPokemonLayerJson = function(pokemon){
-    	return pokemon;
+    var buildPokemonLayerJson = function(pokemons){
+		return pokemons
+            .map(pokemon => {
+                var timeParts = pokemon.tth.split(':');
+                var tthParts = [];
+                var hasHours = false;
+                
+                if(timeParts[0] > 0){
+                    hasHours = true;
+                    tthParts.push(timeParts[0] + ' Stunde' + (timeParts[0] != 1 ? 'n' : ''));
+                }
+                
+                if(timeParts[1] > 0 || hasHours){
+                    tthParts.push(timeParts[1] + ' Minute' + (timeParts[1] != 1 ? 'n' : ''))
+                }
+                
+                tthParts.push(timeParts[2] + ' Sekunde' + (timeParts[2] != 1 ? 'n' : ''))
+                pokemon.tth_string = 'Noch ' + tthParts.join(', ');
+                return pokemon;
+            })
+            .map(pokemon => { 
+    			return {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [pokemon.lon, pokemon.lat]
+                    },
+                    'properties': {
+                        'description': renderTemplate(pokemonPopupHtml, pokemon),
+                        'icon': loadPokemonIcon(pokemon.pokemon_id)
+                    }
+      			}
+    		});
     }
     
     var renderTemplate = function(template, obj){
@@ -290,7 +331,7 @@ $(document).ready(function(){
         });
     }
     
-    var loadPokemonIcon = function(pokedex_id, raid_level) {    	
+    var loadPokemonIcon = function(pokedex_id) {    	
     	var name = 'icon_pokedex_' + pokedex_id;
     	var url = 'buidl/pogoassets/id_' + pokedex_id + '.png';
     	

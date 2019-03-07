@@ -40,7 +40,7 @@ body {
 	display: block;
 }
 
-.gym_popup, .raid_popup {
+.gym_popup, .raid_popup, .pokemon_popup {
 	width: 250px;
 	text-align: center;
 }
@@ -55,11 +55,11 @@ body {
 	border-radius: 3px;
 }
 
-.gym_exgym_0{
+.gym_exgym_0, .raid_attendees_0, .raid_moves_present_0{
 	display: none;
 }
 
-.gym_exgym_1{
+.gym_exgym_1, .raid_attendees_1, .raid_moves_present_1{
 	display: block;
 }
 
@@ -81,7 +81,7 @@ body {
     background-repeat: no-repeat;
 }
 
-.gym_image, .raid_image {
+.gym_image, .raid_image, .pokemon_image {
 	height: 160px;
 	width: 160px;
 	border: 1px solid;
@@ -91,7 +91,13 @@ body {
     margin: 10px auto;
 }
 
-.gym_image img, .raid_image img {
+.pokemon_image {
+    background-image: url('../buidl/grass.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+}
+
+.gym_image img, .raid_image img, .pokemon_image img {
     height: 150px;
 	width: 150px;
     margin: 5px;
@@ -101,14 +107,14 @@ body {
     clip-path: circle(75px at center);
 }
 
-.gym_info, .raid_info {
+.gym_info, .raid_info, .pokemon_info {
 	background-color: rgba(255, 255, 255, .7);
 	padding: 3px;
 	border-radius: 3px;
 	border: 1px solid;
 }
 
-.gym_name, .raid_gym_name, .raid_boss {
+.gym_name, .raid_gym_name, .raid_boss, .pokemon_name {
 	font-weight: bold;
 	font-size: large;
     margin-top: 10px;
@@ -184,12 +190,4 @@ hr {
 
 .raid_attendees p:before{
     content: '\21B3';
-}
-
-.raid_attendees_0{
-	display: none;
-}
-
-.raid_attendees_1{
-	display: block;
 }
