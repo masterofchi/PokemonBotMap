@@ -1,0 +1,193 @@
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+#layer_settings, #layer_settings * {
+	cursor: pointer;
+}
+
+#layer_settings ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0.7em;
+	min-width: 26px;
+	min-height: 26px;
+	background: url('../buidl/layers.png');
+}
+
+#layer_settings ul li {
+	display: none;
+}
+
+#layer_settings:hover ul {
+	background-image: none;
+}
+
+#layer_settings:hover ul li {
+	display: block;
+}
+
+.gym_popup, .raid_popup, .pokemon_popup {
+	width: 250px;
+	text-align: center;
+}
+
+.gym_exgym{
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	padding: 1px 3px;
+	background-color: #5CAFC5;
+	color: #FFF;
+	border-radius: 3px;
+}
+
+.gym_exgym_0, .raid_attendees_0, .raid_moves_present_0{
+	display: none;
+}
+
+.gym_exgym_1, .raid_attendees_1, .raid_moves_present_1{
+	display: block;
+}
+
+.gym_team_1, .gym_team_mystic {
+	background: url('../buidl/mystic_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_team_2, .gym_team_valor {
+	background: url('../buidl/valor_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_team_3, .gym_team_instinct {
+	background: url('../buidl/instinct_bg.png');
+    background-size: 250px;
+    background-repeat: no-repeat;
+}
+
+.gym_image, .raid_image, .pokemon_image {
+	height: 160px;
+	width: 160px;
+	border: 1px solid;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, .7);
+    overflow: hidden;
+    margin: 10px auto;
+}
+
+.pokemon_image {
+    background-image: url('../buidl/grass.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
+}
+
+.gym_image img, .raid_image img, .pokemon_image img {
+    height: 150px;
+	width: 150px;
+    margin: 5px;
+    background-size: 150px 150px;
+    background-position: center; 
+    background-repeat: no-repeat;
+    clip-path: circle(75px at center);
+}
+
+.gym_info, .raid_info, .pokemon_info {
+	background-color: rgba(255, 255, 255, .7);
+	padding: 3px;
+	border-radius: 3px;
+	border: 1px solid;
+}
+
+.gym_name, .raid_gym_name, .raid_boss, .pokemon_name {
+	font-weight: bold;
+	font-size: large;
+    margin-top: 10px;
+}
+
+.raid_level{
+    padding: 3px;
+    height: 20px;
+    margin: 1px auto;
+}
+
+.raid_level_0 {
+    width: 23px;
+    background-image: url('../buidl/level.png');
+    background-repeat: no-repeat;
+    background-position: 3px 3px;
+    background-color: #000;
+}
+
+.raid_level_1 {
+    width: 23px;
+    background-image: url('../buidl/level.png');
+    background-repeat: no-repeat;
+    background-position: 3px 3px;
+}
+
+.raid_level_2 {
+    width: 47px;
+    background-image: url('../buidl/level.png'), url('../buidl/level.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: 3px 3px, 27px 3px;
+}
+
+.raid_level_3 {
+    width: 71px;
+    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position: 3px 3px, 27px 3px, 51px 3px;
+}
+
+.raid_level_4 {
+    width: 95px;
+    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: 3px 3px, 27px 3px, 51px 3px, 75px 3px;
+}
+
+.raid_level_5 {
+    width: 119px;
+    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: 3px 3px, 27px 3px, 51px 3px, 75px 3px, 99px 3px;
+}
+
+.raid_time:before {
+    content: '\23F0';
+}
+
+hr {
+    width: 90%;
+    border-top: 1px solid #000;
+    border-bottom: none;
+    margin: 10px auto;
+}
+
+.raid_attendees:before {
+    content: '\1F465';
+}
+
+.raid_attendees p {
+    margin: 0;
+}
+
+.raid_attendees p:before{
+    content: '\21B3';
+}

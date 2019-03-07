@@ -10,6 +10,7 @@
   try {
 
     $sql = "SELECT 
+                gyms.id,
                 gyms.lat,
                 gyms.lon,
                 gyms.gym_name,
