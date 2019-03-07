@@ -1,4 +1,4 @@
-var settings = $.cookie('settings') != null ? JSON.parse($.cookie('settings')) : null;
+var settings = $.cookie('pogoraidmap_settings') != null ? JSON.parse($.cookie('pogoraidmap_settings')) : null;
 
 if(settings == null){
 	settings = {
@@ -34,20 +34,7 @@ $(document).ready(function(){
     
     // Add geolocate control to the map.
     map.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }), 'top-left');
-
-    // Load pokestop images
-    map.loadImage('buidl/instinct64x.png', function(error, image){
-    	map.addImage('instinct', image);
-    });
-    
-    map.loadImage('buidl/mystic64x.png', function(error, image){
-    	map.addImage('mystic', image);
-    });
-    
-    map.loadImage('buidl/valor64x.png', function(error, image){
-    	map.addImage('valor', image);
-    });
-    
+        
     // Preload popup HTML templates
     var raidPopupHtml;
     var gymPopupHtml;
@@ -66,8 +53,7 @@ $(document).ready(function(){
     // Handle style switches
     $('#layer_settings ul li input:radio[name="style"]').click(function() {
     	map.setStyle('mapbox://styles/mapbox/' + $(this).attr('value'));
-    	settings.style = $(this).attr('value');    	
-    	updateData();
+    	settings.style = $(this).attr('value');    
     });
     
     // Setup layer settings
@@ -131,24 +117,39 @@ $(document).ready(function(){
     };
     
     var buildRaidLayerJson = function(raids){
-    	return raids;
+    	return raids.map(function(raid){
+    		return {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [raid.lon, raid.lat]
+                },
+                'properties': {
+                    'title': raid.pokemon_name,
+                    'description': renderPopup(raidPopupHtml, raid),
+                    'icon': loadPokemonIcon(raid.pokedex_id, raid.raid_level)
+                }
+    		}
+    	});
     }
     
     var buildGymLayerJson = function(gyms, raids, raid_levels){
     	return gyms
     			.filter(gym => raids.filter(raid => raid.gym_id == gym.id && raid_levels.includes(raid.raid_level)).length == 0)
-    			.map(function(gym){ return {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [gym.lon, gym.lat]
-                    },
-                    'properties': {
-                        'title': gym.gym_name,
-                        'description': renderPopup(gymPopupHtml, gym),
-                        'icon': (gym.team == 1 ? 'mystic' : (gym.team == 2 ? 'valor' : 'instinct'))
-                    }
-                }});
+    			.map(function(gym){ 
+    				return {
+	                    'type': 'Feature',
+	                    'geometry': {
+	                        'type': 'Point',
+	                        'coordinates': [gym.lon, gym.lat]
+	                    },
+	                    'properties': {
+	                        'title': gym.gym_name,
+	                        'description': renderPopup(gymPopupHtml, gym),
+	                        'icon': (gym.team == 1 ? 'mystic' : (gym.team == 2 ? 'valor' : 'instinct'))
+	                    }
+    				}
+				});
     }
     
     var buildPokemonLayerJson = function(pokemon){
@@ -166,19 +167,29 @@ $(document).ready(function(){
     }
     
     var updateMap = function(){
+    	if(!map.isStyleLoaded()){
+    		window.setTimeout(updateMap, 100);
+    		return;
+    	}
+    	
     	for (const key in mapData) {
     		  var value = mapData[key];
     		  
     		  if(value == null){	  
-    			  if (map.getLayer(key)) {
+    			  if (map.getLayer(key) !== undefined) {
     				  map.removeLayer(key);
+    			  }
+    			  
+    			  if(map.getSource(key) !== undefined){
     				  map.removeSource(key);
     			  }
     		  }
-    		  else{    			  
-    			  if (!map.getLayer(key)) {
+    		  else{    		
+    			  if(!map.getSource(key)){
     				  map.addSource(key, { type: 'geojson', data: { 'type': 'FeatureCollection', 'features': value} });
-    				  
+    			  }
+    			  
+    			  if (!map.getLayer(key)) {    				  
     				  map.addLayer({
 	    				  'id': key,
 	    				  'type': 'symbol',
@@ -197,14 +208,76 @@ $(document).ready(function(){
     	}
     }
     
+    var loadImages = function() {
+    	var icons = [
+    		{
+    			'name' : 'instinct',
+    			'src' : 'buidl/instinct64x.png'
+    		},
+    		{
+    			'name' : 'mystic',
+    			'src' : 'buidl/mystic64x.png'
+    		},
+    		{
+    			'name' : 'valor',
+    			'src' : 'buidl/valor64x.png'
+    		}
+    	];
+    	
+    	icons.forEach(icon => {
+            map.loadImage(icon.src, function(error, image){
+            	map.addImage(icon.name, image);
+            });
+    	});
+    }
+    
+    var loadPokemonIcon = function(pokedex_id, raid_level) {    	
+    	var name = 'icon_pokedex_' + pokedex_id;
+    	var url = 'buidl/pogoassets/id_' + pokedex_id + '.png';
+    	
+    	if(pokedex_id > 9990){
+    		if(raid_level > 0){
+				name = 'icon_egg_l' + raid_level;
+				url = 'buidl/egg_L' + raid_level + '.png';
+    		}
+    		else{
+				name = 'icon_egg_X';
+				url = 'buidl/egg_X.png';   			
+    		}
+    	}
+    	
+    	if(!map.hasImage(name)){
+	    	map.loadImage(url, function(error, image){
+	        	map.addImage(name, image);
+	        });
+    	}
+    	
+    	return name;
+    }
+    
     map.on('load', function () {
     	updateData();
     });
     
-	 // When a click event occurs on a feature in the places layer, open a popup at the
-	 // location of the feature, with description HTML from its properties.
-	 map.on('click', 'gyms', function(e) { handleClick(e); });
-	 map.on('click', 'exgyms', function(e) { handleClick(e); });
+    map.on('style.load', function() {  
+    	loadImages();
+    	updateData();
+    });
+    
+    map.on('moveend', function(){
+    	var location = map.getCenter();
+    	settings.location = [ location.lng, location.lat ];
+    });
+    
+    map.on('zoomend', function(){
+    	settings.zoom = map.getZoom();
+    });
+    
+    for (const key in mapData) {
+	   	 map.on('click', key, function(e) { handleClick(e); });
+		 map.on('mouseenter', key, function() { handleMouseEnter(); });
+		 map.on('mouseleave', key, function() { handleMouseLeave(); });
+    }
 			 
 	var handleClick = function (e) {
 		 var coordinates = e.features[0].geometry.coordinates.slice();
@@ -222,18 +295,11 @@ $(document).ready(function(){
 			 .setHTML(description)
 			 .addTo(map);
 	 };
-		  
-	 // Change the cursor to a pointer when the mouse is over the places layer.
-	 map.on('mouseenter', 'gyms', function() { handleMouseEnter(); });
-	 map.on('mouseenter', 'exgyms', function() { handleMouseEnter(); });
 			 
 	var handleMouseEnter = function () {
 		 map.getCanvas().style.cursor = 'pointer';
 	 };
 	  
-	 // Change it back to a pointer when it leaves.
-	 map.on('mouseleave', 'gyms', function() { handleMouseLeave(); });
-	 map.on('mouseleave', 'exgyms', function() { handleMouseLeave(); });
 			 
 	var handleMouseLeave = function () {
 		 map.getCanvas().style.cursor = '';
@@ -241,5 +307,5 @@ $(document).ready(function(){
 });
  
 $(window).on('unload', function(){		 
-		 $.cookie('settings', JSON.stringify(settings));
+		 $.cookie('pogoraidmap_settings', JSON.stringify(settings), { expires: 30 });
 });

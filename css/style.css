@@ -45,6 +45,24 @@ body {
 	text-align: center;
 }
 
+.gym_exgym{
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	padding: 1px 3px;
+	background-color: #5CAFC5;
+	color: #FFF;
+	border-radius: 3px;
+}
+
+.gym_exgym_0{
+	display: none;
+}
+
+.gym_exgym_1{
+	display: block;
+}
+
 .gym_team_1 {
 	background: url('../buidl/mystic_bg.png');
     background-size: 250px;
