@@ -17,7 +17,7 @@
                 pokemon_i18n.pokemon_name
             FROM
                 pokemon_sightings
-                LEFT JOIN pokemon_i18n on pokemon_i18n.pokedex_id = pokemon_sightings.pokemon_id AND pokemon_i18n.language = 'DE'";
+                LEFT JOIN pokemon_i18n on pokemon_i18n.pokedex_id = pokemon_sightings.pokemon_id AND pokemon_i18n.language = '" . LANGUAGE . "'";
     $result = $dbh->query($sql);
     
     while($pokemon = $result->fetch(PDO::FETCH_ASSOC)) {

@@ -38,7 +38,7 @@ $sql_raids = "
       LEFT JOIN moves on moves.id = raids.gym_id
       LEFT JOIN cleanup on cleanup.raid_id = raids.id
       LEFT JOIN mapadroid.gym_team on mapadroid.gym_team.name = gyms.gym_name
-      LEFT JOIN pokemon_i18n ON pokemon_i18n.pokedex_id = pokemon.pokedex_id AND pokemon_i18n.language = 'DE'
+      LEFT JOIN pokemon_i18n ON pokemon_i18n.pokedex_id = pokemon.pokedex_id AND pokemon_i18n.language = '" . LANGUAGE . "' 
     WHERE raids.end_time > NOW()
       AND raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour
     GROUP BY  gyms.gym_name
