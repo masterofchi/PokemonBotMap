@@ -2423,4 +2423,8 @@ INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (806,'FR','Pie
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (807,'FR','Zeraora');
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (808,'FR','Meltan');
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (809,'FR','Melmetal');
-
+INSERT INTO pokemon_i18n(pokedex_id, language, pokemon_name) VALUES (9991, 'DE', 'Level 1 Ei');
+INSERT INTO pokemon_i18n(pokedex_id, language, pokemon_name) VALUES (9992, 'DE', 'Level 2 Ei');
+INSERT INTO pokemon_i18n(pokedex_id, language, pokemon_name) VALUES (9993, 'DE', 'Level 3 Ei');
+INSERT INTO pokemon_i18n(pokedex_id, language, pokemon_name) VALUES (9994, 'DE', 'Level 4 Ei');
+INSERT INTO pokemon_i18n(pokedex_id, language, pokemon_name) VALUES (9995, 'DE', 'Level 5 Ei');
