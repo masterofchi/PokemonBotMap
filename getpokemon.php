@@ -9,7 +9,15 @@
   $rows = array();  
   try {
 
-    $sql = "select * from pokemon_sightings";
+    $sql = "SELECT 
+                pokemon_sightings.pokemon_id,
+                pokemon_sightings.tth,
+                pokemon_sightings.lat,
+                pokemon_sightings.lon,
+                pokemon_i18n.pokemon_name
+            FROM
+                pokemon_sightings
+                LEFT JOIN pokemon_i18n on pokemon_i18n.pokedex_id = pokemon_sightings.pokemon_id AND pokemon_i18n.language = '" . LANGUAGE . "'";
     $result = $dbh->query($sql);
     
     while($pokemon = $result->fetch(PDO::FETCH_ASSOC)) {
