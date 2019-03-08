@@ -149,7 +149,9 @@ $(document).ready(function(){
                     'properties': {
                         'title': raid.pokemon_name,
                         'description': renderTemplate(raidPopupHtml, raid),
-                        'icon': loadPokemonIcon(raid.pokedex_id)
+                        'icon': loadPokemonIcon(raid.pokedex_id),
+                        'raid_level': raid.raid_level == '0' || isNaN(raid.raid_level) ? 'EX RAID' : '\u272A'.repeat(raid.raid_level),
+                        'attendees': raid.raiders != null ? Object.keys(raid.raiders).map(key => { return raid.raiders[key].raiders * 1; }).reduce(function(total, num){ return total + num; } ) : ''
                     }
         		}
         	});
@@ -245,6 +247,7 @@ $(document).ready(function(){
                         'coordinates': [pokemon.lon, pokemon.lat]
                     },
                     'properties': {
+                        'title': pokemon.pokemon_name,
                         'description': renderTemplate(pokemonPopupHtml, pokemon),
                         'icon': loadPokemonIcon(pokemon.pokemon_id)
                     }
@@ -293,10 +296,17 @@ $(document).ready(function(){
 	    				  'type': 'symbol',
 	    				  'source': key,
 	    				  'layout': {
+				              'text-field': '{raid_level} {attendees}',
+                              'icon-anchor': 'bottom',
+                              'text-anchor': 'center',
 	    					  'icon-image': '{icon}',
 	    					  'icon-size': 0.25,
-	    					  'icon-allow-overlap': true
-	    				  }
+	    					  'icon-allow-overlap': true,
+	    					  'text-allow-overlap': true
+	    				  },
+                          'paint': {
+                            'text-opacity': 0.5
+                          }
 					  });
     			  }
     			  else{

@@ -124,52 +124,46 @@ body {
 }
 
 .raid_level{
-    padding: 3px;
-    height: 20px;
-    margin: 1px auto;
+    padding: 0;
+    margin: 5px auto;
 }
 
-.raid_level_0 {
-    width: 23px;
-    background-image: url('../buidl/level.png');
-    background-repeat: no-repeat;
-    background-position: 3px 3px;
-    background-color: #000;
+.raid_level_0:before {
+    padding: 1px 3px;
+	background-color: #5CAFC5;
+	color: #FFF;
+	border-radius: 3px;
+    content: 'EX RAID';
 }
 
-.raid_level_1 {
-    width: 23px;
-    background-image: url('../buidl/level.png');
-    background-repeat: no-repeat;
-    background-position: 3px 3px;
+.raid_level_1:before {
+    color: #FFDF65;
+    font-size: xx-large;
+    content: '\272A';
 }
 
-.raid_level_2 {
-    width: 47px;
-    background-image: url('../buidl/level.png'), url('../buidl/level.png');
-    background-repeat: no-repeat, no-repeat;
-    background-position: 3px 3px, 27px 3px;
+.raid_level_2:before {
+    color: #FFDF65;
+    font-size: xx-large;
+    content: '\272A \272A';
 }
 
-.raid_level_3 {
-    width: 71px;
-    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
-    background-repeat: no-repeat, no-repeat, no-repeat;
-    background-position: 3px 3px, 27px 3px, 51px 3px;
+.raid_level_3:before {
+    color: #FFDF65;
+    font-size: xx-large;
+    content: '\272A \272A \272A';
 }
 
-.raid_level_4 {
-    width: 95px;
-    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-    background-position: 3px 3px, 27px 3px, 51px 3px, 75px 3px;
+.raid_level_4:before {
+    color: #FFDF65;
+    font-size: xx-large;
+    content: '\272A \272A \272A \272A';
 }
 
-.raid_level_5 {
-    width: 119px;
-    background-image: url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png'), url('../buidl/level.png');
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
-    background-position: 3px 3px, 27px 3px, 51px 3px, 75px 3px, 99px 3px;
+.raid_level_5:before {
+    color: #FFDF65;
+    font-size: xx-large;
+    content: '\272A \272A \272A \272A \272A';
 }
 
 .raid_time:before {
