@@ -18,7 +18,7 @@ $sql_raids = "
       UNIX_TIMESTAMP(raids.end_time)-UNIX_TIMESTAMP(NOW()) AS t_left,
       pokemon.raid_level,
       pokemon.pokedex_id,
-      pokemon.pokemon_name,
+      pokemon_i18n.pokemon_name,
       attendance.id AS interest,
       SUM(CASE WHEN attendance.cancel=FALSE AND attendance.raid_done=FALSE THEN 1 ELSE 0 END) AS count,
       SUM(CASE WHEN attendance.cancel=FALSE and attendance.raid_done=FALSE THEN attendance.extra_mystic ELSE 0 END) AS extra_mystic,
@@ -38,6 +38,7 @@ $sql_raids = "
       LEFT JOIN moves on moves.id = raids.gym_id
       LEFT JOIN cleanup on cleanup.raid_id = raids.id
       LEFT JOIN mapadroid.gym_team on mapadroid.gym_team.name = gyms.gym_name
+      LEFT JOIN pokemon_i18n ON pokemon_i18n.pokedex_id = pokemon.pokedex_id AND pokemon_i18n.language = 'DE'
     WHERE raids.end_time > NOW()
       AND raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour
     GROUP BY  gyms.gym_name
