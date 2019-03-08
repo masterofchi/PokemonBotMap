@@ -1,3 +1,10 @@
+CREATE TABLE `pokemon_i18n` (
+  `pokedex_id` int(10) unsigned NOT NULL,
+  `language` varchar(45) NOT NULL,
+  `pokemon_name` varchar(45) NOT NULL,
+  PRIMARY KEY (`pokedex_id`,`language`,`pokemon_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (1,'DE','Bisasam');
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (2,'DE','Bisaknosp');
 INSERT INTO pokemon_i18n(pokedex_id,language,pokemon_name) VALUES (3,'DE','Bisaflor');
