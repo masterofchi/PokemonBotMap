@@ -10,7 +10,7 @@ $dbh->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 
 $sql = "
       SELECT 
-        mapadroid.pokestops.name,
+        mapadroid.pokestops.external_id,
         mapadroid.pokestops.lat,
         mapadroid.pokestops.lon,
         mapadroid.trs_quest.quest_type,
@@ -19,6 +19,7 @@ $sql = "
         mapadroid.trs_quest.quest_reward_type,
         mapadroid.trs_quest.quest_item_id,
         mapadroid.trs_quest.quest_item_amount,
+        mapadroid.pokestops.name,
         mapadroid.pokestops.url,
         mapadroid.trs_quest.quest_target,
         mapadroid.trs_quest.quest_condition,
@@ -27,9 +28,9 @@ $sql = "
     FROM
         mapadroid.pokestops
             INNER JOIN
-        mapadroid.trs_quest ON mapadroid.pokestops.external_id = mapadroid.trs_quest.GUID
+        mapadroid.trs_quest ON (mapadroid.pokestops.external_id COLLATE utf8mb4_general_ci) = mapadroid.trs_quest.GUID
     WHERE
-        DATE(FROM_UNIXTIME(mapadroid.trs_quest.quest_timestamp, '%Y-%m-%d')) = CURDATE()
+        DATE(FROM_UNIXTIME(mapadroid.trs_quest.quest_timestamp,'%Y-%m-%d')) = CURDATE()
   ";
 
 $rows = array();
