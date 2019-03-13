@@ -300,7 +300,7 @@ $(document).ready(function(){
                               'icon-anchor': 'bottom',
                               'text-anchor': 'center',
 	    					  'icon-image': '{icon}',
-	    					  'icon-size': 0.25,
+	    					  'icon-size': 0.5,
 	    					  'icon-allow-overlap': true,
 	    					  'text-allow-overlap': true
 	    				  },
@@ -320,15 +320,15 @@ $(document).ready(function(){
     	var icons = [
     		{
     			'name' : 'instinct',
-    			'src' : 'buidl/instinct.png'
+    			'src' : 'buidl/instinct64x.png'
     		},
     		{
     			'name' : 'mystic',
-    			'src' : 'buidl/mystic.png'
+    			'src' : 'buidl/mystic64x.png'
     		},
     		{
     			'name' : 'valor',
-    			'src' : 'buidl/valor.png'
+    			'src' : 'buidl/valor64x.png'
     		}
     	];
     	
@@ -343,7 +343,7 @@ $(document).ready(function(){
     
     var loadPokemonIcon = function(pokedex_id) {    	
     	var name = 'icon_pokedex_' + pokedex_id;
-    	var url = 'buidl/pogoassets/id_' + pokedex_id + '.png';
+    	var url = 'buidl/' + constants.map_icon_pack + '/id_' + pokedex_id + '.png';
     	
 	    map.loadImage(url, function(error, image){
     	   if(!map.hasImage(name)){
@@ -359,7 +359,6 @@ $(document).ready(function(){
     });
     
     map.on('style.load', function() {  
-    	updateMap();
     	updateData();
     });
     

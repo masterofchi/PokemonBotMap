@@ -41,7 +41,7 @@ body {
 }
 
 .gym_popup, .raid_popup, .pokemon_popup {
-	width: 250px;
+	width: 200px;
 	text-align: center;
 }
 
@@ -65,28 +65,28 @@ body {
 
 .gym_team_1, .gym_team_mystic {
 	background: url('../buidl/mystic_bg.png');
-    background-size: 250px;
+    background-size: 200px;
     background-repeat: no-repeat;
 	background-position-y: -15px;
 }
 
 .gym_team_2, .gym_team_valor {
 	background: url('../buidl/valor_bg.png');
-    background-size: 250px;
+    background-size: 200px;
     background-repeat: no-repeat;
 	background-position-y: -15px;
 }
 
 .gym_team_3, .gym_team_instinct {
 	background: url('../buidl/instinct_bg.png');
-    background-size: 250px;
+    background-size: 200px;
     background-repeat: no-repeat;
 	background-position-y: -15px;
 }
 
 .gym_image, .raid_image, .pokemon_image {
-	height: 160px;
-	width: 160px;
+	height: 138px;
+	width: 138px;
 	border: 1px solid;
 	border-radius: 50%;
 	background-color: rgba(255, 255, 255, .7);
@@ -101,13 +101,13 @@ body {
 }
 
 .gym_image img, .raid_image img, .pokemon_image img {
-    height: 150px;
-	width: 150px;
+    height: 128px;
+	width: 128px;
     margin: 5px;
-    background-size: 150px 150px;
+    background-size: 128px 128px;
     background-position: center; 
     background-repeat: no-repeat;
-    clip-path: circle(75px at center);
+    clip-path: circle(64px at center);
 }
 
 .gym_info, .raid_info, .pokemon_info {
