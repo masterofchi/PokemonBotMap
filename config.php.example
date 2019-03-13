@@ -20,7 +20,8 @@ define('MAP_RAID_FOOTER',	    ''); //text displayed as a footer on the map when 
 define('MAP_EX_RAID_FOOTER',	''); //text displayed as a footer on the map when clicking on a gym announcing an ex raid
 define('MAP_QUEST_FOOTER',	    ''); //text displayed as a footer on the map when clicking on a quest
 define('LANGUAGE',  'EN'); // set the language to NL,DE,EN,PT-BR.
-define('MAP_STARTING_ZOOM', '14');
+define('MAP_STARTING_ZOOM', 14); // the initial zoom factor for the map
+define('MAP_REFRESH_RATE', 60); // the map refresh rate in seconds 
 
 
 //Quests - Optional settings for adding QuestBot data to your map
