@@ -40,7 +40,7 @@ body {
 	display: block;
 }
 
-.gym_popup, .raid_popup, .pokemon_popup {
+.gym_popup, .raid_popup, .pokemon_popup, .quest_popup {
 	width: 200px;
 	text-align: center;
 }
@@ -84,7 +84,7 @@ body {
 	background-position-y: -15px;
 }
 
-.gym_image, .raid_image, .pokemon_image {
+.gym_image, .raid_image, .pokemon_image, .quest_image {
 	height: 138px;
 	width: 138px;
 	border: 1px solid;
@@ -100,7 +100,7 @@ body {
     background-repeat: no-repeat;
 }
 
-.gym_image img, .raid_image img, .pokemon_image img {
+.gym_image img, .raid_image img, .pokemon_image img, .quest_image img {
     height: 128px;
 	width: 128px;
     margin: 5px;
@@ -110,16 +110,16 @@ body {
     clip-path: circle(64px at center);
 }
 
-.gym_info, .raid_info, .pokemon_info {
+.gym_info, .raid_info, .pokemon_info, .quest_info {
 	background-color: rgba(255, 255, 255, .9);
 	padding: 3px;
 	border-radius: 3px;
 	border: 1px solid;
 }
 
-.gym_name, .raid_gym_name, .raid_boss, .pokemon_name {
+.gym_name, .raid_gym_name, .raid_boss, .pokemon_name, .quest_stop_name {
 	font-weight: bold;
-	font-size: large;
+	font-size: 1.3em;
     margin-top: 10px;
 }
 
@@ -128,7 +128,7 @@ body {
     margin: 5px auto;
 }
 
-.raid_level_0:before {
+.raid_level_X:before {
     padding: 1px 3px;
 	background-color: #5CAFC5;
 	color: #FFF;
@@ -187,6 +187,22 @@ hr {
 
 .raid_attendees p:before{
     content: '\21B3';
+}
+
+.quest_image{
+	position: relative;
+}
+
+.quest_reward_amount{         
+	position: absolute;
+    top: 45%;
+    font-size: large;
+    text-shadow: black 0 0 0.2em;
+    z-index: 9999;
+    left: 8px;
+    width: 36px;
+    color: white;
+    text-align: right;
 }
 
 .mapboxgl-popup-close-button {
