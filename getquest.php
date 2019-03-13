@@ -9,7 +9,7 @@ $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb
 $dbh->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 
 $sql = "
-      SELECT 
+      SELECT
         mapadroid.pokestops.external_id,
         mapadroid.pokestops.lat,
         mapadroid.pokestops.lon,
@@ -19,10 +19,10 @@ $sql = "
         mapadroid.trs_quest.quest_reward_type,
         mapadroid.trs_quest.quest_item_id,
         mapadroid.trs_quest.quest_item_amount,
-        mapadroid.pokestops.name,
+        replace(mapadroid.pokestops.name,'\"','') as name,
         mapadroid.pokestops.url,
         mapadroid.trs_quest.quest_target,
-        mapadroid.trs_quest.quest_condition,
+        replace(mapadroid.trs_quest.quest_condition,'\'', '\"') as quest_condition,
         mapadroid.trs_quest.quest_timestamp,
         mapadroid.trs_quest.quest_task
     FROM
@@ -35,26 +35,19 @@ $sql = "
 
 $rows = array();
 try {
-
+    
     $result = $dbh->query($sql);
     while ($stops = $result->fetch(PDO::FETCH_ASSOC)) {
-
+        
         $rows[] = $stops;
     }
 } catch (PDOException $exception) {
-
+    
     error_log($exception->getMessage());
     $dbh = null;
     exit();
 }
-
-$json = file_get_contents(LOCATION_QUEST_REWARD_JSON);
-$translations = json_decode($json, true);
-
-$data['translations'] = $translations;
-$data['stops'] = $rows;
-
-print json_encode($data);
+print str_replace('True', '"True"',str_replace('False', '"False"',str_replace('"[','[',str_replace(']"', ']',str_replace('\\"','"',json_encode($rows))))));
 
 $dbh = null;
 ?>
