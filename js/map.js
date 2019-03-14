@@ -47,7 +47,7 @@ $(document).ready(function(){
     var pokemonPopupPromise = $.get('templates/pokemon_popup.html');
     var attendancePromise = $.get('templates/raid_attendance.html');
     var questPopupPromise = $.get('templates/quest_popup.html');
-
+    
     $.when(raidPopupPromise, gymPopupPromise, pokemonPopupPromise, attendancePromise, questPopupPromise)
     	.done(function(raidData, gymData, pokemonData, attendanceData, questData) {
 			raidPopupHtml = raidData[0];
@@ -76,7 +76,9 @@ $(document).ready(function(){
     	}
     });
     
-    // Handle layer switches
+    // Handle layer switches   
+    var lastUpdateTime = null;
+
     $('#layer_settings ul li input:checkbox').click(function() {
     	if($(this).is(':checked')){
     		if(!settings.layers.includes($(this).attr('value'))){
@@ -87,6 +89,7 @@ $(document).ready(function(){
     		settings.layers = settings.layers.filter(layer => layer != $(this).attr('value'));
     	}
     	
+    	lastUpdateTime = null;
     	updateData();
     }); 
     
@@ -104,30 +107,74 @@ $(document).ready(function(){
 		'quests': null
     };   
     
-    var updateData = function(){	
-	   	var gymsPromise = $.getJSON('getgyms.php');
-	   	var raidPromise = $.getJSON('getraids.php');
-	   	var pokemonPromise = $.getJSON('getpokemon.php');
-	   	var questsPromise = $.getJSON('getquest.php');
+    var updateData = function(){
+    	if(lastUpdateTime !== null && Date.now() < lastUpdateTime + (constants.map_refresh_rate * 1000)){
+    		window.setTimeout(updateData, 100);
+    		return;
+    	}
+    	else{
+    		lastUpdateTime = Date.now();
+    	}
+    	
+    	var promises = [];
+    	
+	   	var gymsPromise = function(){ return $.getJSON('getgyms.php'); };
+	   	var raidPromise = function(){ return $.getJSON('getraids.php'); };
+	   	var pokemonPromise = function(){ return $.getJSON('getpokemon.php'); };
+	   	var questsPromise = function(){ return $.getJSON('getquest.php'); };
 	   	
-	   	$.when(gymsPromise, raidPromise, pokemonPromise, questsPromise)
-	   		.done(function(gym_data, raid_data, pokemon_data, quests_data){
-		   		mapData.exraids = settings.layers.includes('show_exraids') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 'X')) : null;
-		   		mapData.raids5 = settings.layers.includes('show_raids5') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 5)) : null;
-		   		mapData.raids4 = settings.layers.includes('show_raids4') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 4)) : null;
-		   		mapData.raids3 = settings.layers.includes('show_raids3') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 3)) : null;
-		   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 2)) : null;
-		   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 1)) : null;
-		   		
-		   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], true)) : null;
-		   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], false)) : null;
-		   		
-		   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data[0]) : null;
-		   		
-		   		mapData.quests = settings.layers.includes('show_quests') ? buildQuestsLayerJson(quests_data[0]) : null;
-		   		
-		   		updateMap();
-		   	});
+	   	if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   		promises.push(gymsPromise());
+	   	}
+	   	
+	   	if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   		promises.push(raidPromise());
+	   	}
+	   	
+	   	if(settings.layers.includes('show_pokemon')){
+	   		promises.push(pokemonPromise());
+	   	}
+	   	
+	   	if(settings.layers.includes('show_quests')){
+	   		promises.push(questsPromise());
+	   	}
+	   	
+	   	Promise.all(promises).then(data => {
+	   		var index = 0;
+	   		var gym_data = [], raid_data = [], pokemon_data = [], quests_data = [];
+	   		
+	   		if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   			gym_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   			raid_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.includes('show_pokemon')){
+	   			pokemon_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.includes('show_quests')){
+	   			quests_data = data[index++];
+	   		}
+	   		
+	   		mapData.exraids = settings.layers.includes('show_exraids') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 'X')) : null;
+	   		mapData.raids5 = settings.layers.includes('show_raids5') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 5)) : null;
+	   		mapData.raids4 = settings.layers.includes('show_raids4') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 4)) : null;
+	   		mapData.raids3 = settings.layers.includes('show_raids3') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 3)) : null;
+	   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 2)) : null;
+	   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 1)) : null;
+	   		
+	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, true)) : null;
+	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, false)) : null;
+	   		
+	   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data) : null;
+	   		
+	   		mapData.quests = settings.layers.includes('show_quests') ? buildQuestsLayerJson(quests_data) : null;
+	   		
+	   		updateMap();
+	   	});
 	   	
 	   	window.setTimeout(updateData, constants.map_refresh_rate * 1000);
     };
