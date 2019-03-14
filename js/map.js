@@ -40,18 +40,22 @@ $(document).ready(function(){
     var gymPopupHtml;
     var pokemonPopupHtml
     var attendanceHtml;
+    var questPopupHtml;
     
     var raidPopupPromise = $.get('templates/raid_popup.html');
     var gymPopupPromise = $.get('templates/gym_popup.html');
     var pokemonPopupPromise = $.get('templates/pokemon_popup.html');
     var attendancePromise = $.get('templates/raid_attendance.html');
-
-    $.when(raidPopupPromise, gymPopupPromise, pokemonPopupPromise, attendancePromise).done(function(raidData, gymData, pokemonData, attendanceData) {
-		raidPopupHtml = raidData[0];
-		gymPopupHtml = gymData[0];
-        pokemonPopupHtml = pokemonData[0];
-        attendanceHtml = attendanceData[0];
-    });
+    var questPopupPromise = $.get('templates/quest_popup.html');
+    
+    $.when(raidPopupPromise, gymPopupPromise, pokemonPopupPromise, attendancePromise, questPopupPromise)
+    	.done(function(raidData, gymData, pokemonData, attendanceData, questData) {
+			raidPopupHtml = raidData[0];
+			gymPopupHtml = gymData[0];
+	        pokemonPopupHtml = pokemonData[0];
+	        attendanceHtml = attendanceData[0];
+	        questPopupHtml = questData[0];
+	    });
     
     // Setup style settings
     $('#layer_settings ul li input:radio[value="' + settings.style + '"]').prop('checked', 'checked');
@@ -72,7 +76,9 @@ $(document).ready(function(){
     	}
     });
     
-    // Handle layer switches
+    // Handle layer switches   
+    var lastUpdateTime = null;
+
     $('#layer_settings ul li input:checkbox').click(function() {
     	if($(this).is(':checked')){
     		if(!settings.layers.includes($(this).attr('value'))){
@@ -83,48 +89,99 @@ $(document).ready(function(){
     		settings.layers = settings.layers.filter(layer => layer != $(this).attr('value'));
     	}
     	
+    	lastUpdateTime = null;
     	updateData();
     }); 
     
     // Setup map data object
     var mapData = {
-    		'exraids': null,
-    		'raids5': null,
- 			'raids4': null,
- 			'raids3': null,
- 			'raids2': null,
- 			'raids1': null,
- 			'exgyms': null,
- 			'gyms': null,
-			'pokemon': null
-	   };   
+		'exraids': null,
+		'raids5': null,
+		'raids4': null,
+		'raids3': null,
+		'raids2': null,
+		'raids1': null,
+		'exgyms': null,
+		'gyms': null,
+		'pokemon': null,
+		'quests': null
+    };   
     
-    var updateData = function(){	
-	   	var gymsPromise = $.getJSON('getgyms.php');
-	   	var raidPromise = $.getJSON('getraids.php');
-	   	var pokemonPromise = $.getJSON('getpokemon.php');
+    var updateData = function(){
+    	if(lastUpdateTime !== null && Date.now() < lastUpdateTime + (constants.map_refresh_rate * 1000)){
+    		window.setTimeout(updateData, 100);
+    		return;
+    	}
+    	else{
+    		lastUpdateTime = Date.now();
+    	}
+    	
+    	var promises = [];
+    	
+	   	var gymsPromise = function(){ return $.getJSON('getgyms.php'); };
+	   	var raidPromise = function(){ return $.getJSON('getraids.php'); };
+	   	var pokemonPromise = function(){ return $.getJSON('getpokemon.php'); };
+	   	var questsPromise = function(){ return $.getJSON('getquest.php'); };
 	   	
-	   	$.when(gymsPromise, raidPromise, pokemonPromise).done(function(gym_data, raid_data, pokemon_data){
-	   		mapData.exraids = settings.layers.includes('show_exraids') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 0)) : null;
-	   		mapData.raids5 = settings.layers.includes('show_raids5') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 5)) : null;
-	   		mapData.raids4 = settings.layers.includes('show_raids4') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 4)) : null;
-	   		mapData.raids3 = settings.layers.includes('show_raids3') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 3)) : null;
-	   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 2)) : null;
-	   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data[0].filter(raid => raid.raid_level == 1)) : null;
+	   	if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   		promises.push(gymsPromise());
+	   	}
+	   	
+	   	if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   		promises.push(raidPromise());
+	   	}
+	   	
+	   	if(settings.layers.includes('show_pokemon')){
+	   		promises.push(pokemonPromise());
+	   	}
+	   	
+	   	if(settings.layers.includes('show_quests')){
+	   		promises.push(questsPromise());
+	   	}
+	   	
+	   	Promise.all(promises).then(data => {
+	   		var index = 0;
+	   		var gym_data = [], raid_data = [], pokemon_data = [], quests_data = [];
 	   		
-	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], true)) : null;
-	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data[0], raid_data[0], false)) : null;
-	   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data[0]) : null;
+	   		if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   			gym_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   			raid_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.includes('show_pokemon')){
+	   			pokemon_data = data[index++];
+	   		}
+	   		
+	   		if(settings.layers.includes('show_quests')){
+	   			quests_data = data[index++];
+	   		}
+	   		
+	   		mapData.exraids = settings.layers.includes('show_exraids') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 'X')) : null;
+	   		mapData.raids5 = settings.layers.includes('show_raids5') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 5)) : null;
+	   		mapData.raids4 = settings.layers.includes('show_raids4') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 4)) : null;
+	   		mapData.raids3 = settings.layers.includes('show_raids3') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 3)) : null;
+	   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 2)) : null;
+	   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 1)) : null;
+	   		
+	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, true)) : null;
+	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, false)) : null;
+	   		
+	   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data) : null;
+	   		
+	   		mapData.quests = settings.layers.includes('show_quests') ? buildQuestsLayerJson(quests_data) : null;
 	   		
 	   		updateMap();
 	   	});
 	   	
-	   	window.setTimeout(updateData, 60000);
+	   	window.setTimeout(updateData, constants.map_refresh_rate * 1000);
     };
     
     var filterGyms = function(gyms, raids, filterForExGyms){
         var result = gyms;
-        var show_raid_levels = settings.layers.map(layer => layer == 'show_exraids' ? '0' : layer.substr(layer.length - 1, layer.length));
+        var show_raid_levels = settings.layers.map(layer => layer == 'show_exraids' ? 'X' : layer.substr(layer.length - 1, layer.length));
         
         if(filterForExGyms){
             result = gyms.filter(gym => gym.ex_gym == 1)
@@ -134,7 +191,7 @@ $(document).ready(function(){
         }        
             
         return result.filter(gym => raids.filter(raid => show_raid_levels.includes(raid.raid_level) && raid.gym_id == gym.id).length == 0);
-    }        
+    };
     
     var buildRaidLayerJson = function(raids){
     	return raids
@@ -150,12 +207,12 @@ $(document).ready(function(){
                         'title': raid.pokemon_name,
                         'description': renderTemplate(raidPopupHtml, raid),
                         'icon': loadPokemonIcon(raid.pokedex_id),
-                        'raid_level': raid.raid_level == '0' || isNaN(raid.raid_level) ? 'EX RAID' : '\u272A'.repeat(raid.raid_level),
+                        'raid_level': raid.raid_level == 'X' ? 'EX RAID' : '\u272A'.repeat(raid.raid_level),
                         'attendees': raid.raiders != null ? Object.keys(raid.raiders).map(key => { return raid.raiders[key].raiders * 1; }).reduce(function(total, num){ return total + num; } ) : ''
                     }
         		}
         	});
-    }
+    };
     
     var prepareRaidForRendering = function(raid) {
         raid.ts_start_string = new Date(raid.ts_start * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -200,7 +257,7 @@ $(document).ready(function(){
         }
         
         return raid;
-    }
+    };
     
     var buildGymLayerJson = function(gyms) {
 		return gyms.map(gym => { 
@@ -213,11 +270,11 @@ $(document).ready(function(){
                 'properties': {
                     'title': gym.gym_name,
                     'description': renderTemplate(gymPopupHtml, gym),
-                    'icon': (gym.team == 1 ? 'mystic' : (gym.team == 2 ? 'valor' : 'instinct'))
+                    'icon': loadTeamIcon(gym.team)
                 }
   			}
 		});
-    }
+    };
     
     var buildPokemonLayerJson = function(pokemons){
 		return pokemons
@@ -253,7 +310,49 @@ $(document).ready(function(){
                     }
       			}
     		});
-    }
+    };
+    
+    var buildQuestsLayerJson = function(quests){
+    	return quests
+	        .map(quest => prepareQuestForRendering(quest))
+	        .map(quest => {
+	    		return {
+	    			'type': 'Feature',
+	                'geometry': {
+	                    'type': 'Point',
+	                    'coordinates': [quest.lon, quest.lat]
+	                },
+	                'properties': {
+	                    'title': quest.quest_task,
+	                    'description': renderTemplate(questPopupHtml, quest),
+	                    'icon': quest.icon
+	                }
+	    		}
+	    	});
+    };
+    
+    var prepareQuestForRendering = function(quest){    	
+    	switch(quest.quest_reward_type){
+			case('2'):{
+				quest.reward_amount = quest.quest_item_amount + 'x ';
+				quest.reward_image = 'buidl/quests/quest_reward_' + quest.quest_item_id + '.png';
+				break;
+			}
+			case('3'):{
+				quest.reward_amount = quest.quest_stardust + ' '; 
+				quest.reward_image = 'buidl/quests/quest_reward_stardust.png';
+				break;
+			}
+			case('7'):{
+				quest.reward_amount = '';
+				quest.reward_image = 'buidl/' + constants.map_icon_pack + '/id_' + quest.quest_pokemon_id + '.png';
+				break;
+			}    		
+		}
+    	
+    	quest.icon = loadQuestIcon(quest);    	
+    	return quest;
+    };
     
     var renderTemplate = function(template, obj){
     	var result = template;
@@ -263,11 +362,9 @@ $(document).ready(function(){
     	}
     	
     	return result;
-    }
+    };
     
     var updateMap = function(){
-        loadImages();
-        
     	if(!map.isStyleLoaded()){
     		window.setTimeout(updateMap, 100);
     		return;
@@ -298,7 +395,7 @@ $(document).ready(function(){
 	    				  'layout': {
 				              'text-field': '{raid_level} {attendees}',
                               'icon-anchor': 'bottom',
-                              'text-anchor': 'center',
+                              'text-anchor': 'center',                              
 	    					  'icon-image': '{icon}',
 	    					  'icon-size': 0.5,
 	    					  'icon-allow-overlap': true,
@@ -314,51 +411,94 @@ $(document).ready(function(){
     			  }
     		  }
     	}
-    }
+    };
     
-    var loadImages = function() {
-    	var icons = [
-    		{
-    			'name' : 'instinct',
-    			'src' : 'buidl/instinct64x.png'
-    		},
-    		{
-    			'name' : 'mystic',
-    			'src' : 'buidl/mystic64x.png'
-    		},
-    		{
-    			'name' : 'valor',
-    			'src' : 'buidl/valor64x.png'
-    		}
-    	];
+    var loadedImages = [];
+    
+    var loadTeamIcon = function(team) {
+    	var name = 'gym';
+    	var url = 'buidl/gym.png';
     	
-        icons.forEach(icon => {
-            map.loadImage(icon.src, function(error, image){
-                if(!map.hasImage(icon.name)){
-                    map.addImage(icon.name, image);
-                }
-            });
-        });
-    }
+    	switch(team){
+	    	case '1':
+	    	case 'mystic':{
+	    		name = 'mystic';
+	    		url = 'buidl/mystic.png';
+	    		break;
+	    	}
+	    	case '2':
+	    	case 'valor':{
+				name = 'valor';
+				url = 'buidl/valor.png';
+				break;
+	    	}
+	    	case '3':
+	    	case 'instinct':{
+				name = 'instinct';
+				url = 'buidl/instinct.png';
+				break;
+	    	}
+    	}
+    	
+    	loadImage(name, url);
+        return name;
+    };
     
     var loadPokemonIcon = function(pokedex_id) {    	
     	var name = 'icon_pokedex_' + pokedex_id;
     	var url = 'buidl/' + constants.map_icon_pack + '/id_' + pokedex_id + '.png';
+    	loadImage(name, url);    	
+    	return name;
+    };
+    
+    var loadQuestIcon = function(quest){
+    	var pokestop_name = 'quest_pokestop';
+    	var pokestop_url = 'buidl/quests/pokestop.png';
     	
-	    map.loadImage(url, function(error, image){
-    	   if(!map.hasImage(name)){
-	        	map.addImage(name, image);
-    	   }
-        });
+    	switch(quest.quest_reward_type){
+			case('2'):{
+				name = 'reward_item_' + quest.quest_item_id;
+				url = 'buidl/quests/quest_reward_' + quest.quest_item_id + '.png';
+				break;
+			}
+			case('3'):{
+				name = 'reward_stardust';
+				url = 'buidl/quests/quest_reward_stardust.png';
+				break;
+			}
+    		case('7'):{
+    			name = 'reward_pokemon_' + quest.quest_pokemon_id;
+    			url = 'buidl/' + constants.map_icon_pack + '/id_' + quest.quest_pokemon_id + '.png';
+    			break;
+    		}    		
+    	}
+    	
+    	name = pokestop_name + '-' + name;
+    	mergeIcons(name, url, pokestop_url);
     	
     	return name;
     }
     
-    map.on('load', function () {
-    	updateData();
+    var loadImage = function(name, url){
+    	if(!loadedImages.includes(name)){
+        	loadedImages.push(name);
+        	
+        	map.loadImage(url, function(error, image){
+	        	map.addImage(name, image);
+        	});
+        }
+    }
+    
+    map.on('load', function () {        
+        for (const key in mapData) {
+    	   	 map.on('click', key, function(e) { handleClick(e); });
+    		 map.on('mouseenter', key, function() { handleMouseEnter(); });
+    		 map.on('mouseleave', key, function() { handleMouseLeave(); });
+        };
     });
     
     map.on('style.load', function() {  
+        loadedImages = [];
     	updateData();
     });
     
@@ -370,12 +510,6 @@ $(document).ready(function(){
     map.on('zoomend', function(){
     	settings.zoom = map.getZoom();
     });
-    
-    for (const key in mapData) {
-	   	 map.on('click', key, function(e) { handleClick(e); });
-		 map.on('mouseenter', key, function() { handleMouseEnter(); });
-		 map.on('mouseleave', key, function() { handleMouseLeave(); });
-    }
 			 
 	var handleClick = function (e) {
 		 var coordinates = e.features[0].geometry.coordinates.slice();
@@ -402,6 +536,28 @@ $(document).ready(function(){
 	var handleMouseLeave = function () {
 		 map.getCanvas().style.cursor = '';
 	 };
+	 
+	 var mergeIcons = function(name, image_fg, image_bg) {
+    	if(!loadedImages.includes(name)){
+	        loadedImages.push(name);
+			var c = document.createElement('canvas');
+			c.width = 128;
+			c.height = 128;
+			var ctx=c.getContext("2d");
+			var imageObj1 = new Image();
+			var imageObj2 = new Image();
+			imageObj1.src = image_bg;
+			 
+			imageObj1.onload = function() {
+			    ctx.drawImage(imageObj1, 0, 0);
+			    imageObj2.src = image_fg;
+			    imageObj2.onload = function() {
+			       ctx.drawImage(imageObj2, 0, 0);			       
+			       map.addImage(name, ctx.getImageData(0, 0, 128, 128));
+			    }
+			};
+    	}
+	 }
 });
  
 $(window).on('unload', function(){		 
