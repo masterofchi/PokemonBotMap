@@ -63,7 +63,7 @@ $(document).ready(function(){
     // Handle style switches
     $('#layer_settings ul li input:radio[name="style"]').click(function() {
     	map.setStyle('mapbox://styles/mapbox/' + $(this).attr('value'));
-    	settings.style = $(this).attr('value');    
+    	settings.style = $(this).attr('value');
     });
     
     // Setup layer settings
@@ -208,7 +208,7 @@ $(document).ready(function(){
                         'description': renderTemplate(raidPopupHtml, raid),
                         'icon': loadPokemonIcon(raid.pokedex_id),
                         'raid_level': raid.raid_level == 'X' ? 'EX RAID' : '\u272A'.repeat(raid.raid_level),
-                        'attendees': raid.raiders != null ? Object.keys(raid.raiders).map(key => { return raid.raiders[key].raiders * 1; }).reduce(function(total, num){ return total + num; } ) : ''
+                        'attendees': raid.raiders != null ? Object.keys(raid.raiders).map(key => { return raid.raiders[key].reduce(function(total, raider){ return total + Number(raider.raiders)}, 0); }).reduce(function(total, num){ return total + num; }, 0) : ''
                     }
         		}
         	});
@@ -245,7 +245,9 @@ $(document).ready(function(){
             raid.raiders_string = '';
             
             for (const key in raid.raiders) {
-                raid.raiders_string += renderTemplate(attendanceHtml, raid.raiders[key]);
+                raid.raiders_string += raid.raiders[key].reduce(function(result, attendence) { 
+                	return result + renderTemplate(attendanceHtml, attendence); 
+                }, '');
             };
         }
         
@@ -281,19 +283,22 @@ $(document).ready(function(){
             .map(pokemon => {
                 var timeParts = pokemon.tth.split(':');
                 var tthParts = [];
-                var hasHours = false;
                 
                 if(timeParts[0] > 0){
-                    hasHours = true;
-                    tthParts.push(timeParts[0] + ' Stunde' + (timeParts[0] != 1 ? 'n' : ''));
+                    tthParts.push(Number(timeParts[0]) + ' Stunde' + (timeParts[0] != 1 ? 'n' : ''));
                 }
                 
-                if(timeParts[1] > 0 || hasHours){
-                    tthParts.push(timeParts[1] + ' Minute' + (timeParts[1] != 1 ? 'n' : ''))
-                }
+                tthParts.push(Number(timeParts[1]) + ' Minute' + (timeParts[1] != 1 ? 'n' : ''))
                 
-                tthParts.push(timeParts[2] + ' Sekunde' + (timeParts[2] != 1 ? 'n' : ''))
-                pokemon.tth_string = 'Noch ' + tthParts.join(', ');
+                if(timeParts[0] == 0 && timeParts[1] < 5){
+                	pokemon.urgent = 1;
+                	pokemon.tth_string = 'Unter 5 Minuten'
+                }
+                else{
+                	pokemon.urgent = 0;                
+                    pokemon.tth_string = 'Noch ' + tthParts.join(', ');
+                }
+                	
                 return pokemon;
             })
             .map(pokemon => { 
@@ -499,6 +504,7 @@ $(document).ready(function(){
     
     map.on('style.load', function() {  
         loadedImages = [];
+    	lastUpdateTime = null;    
     	updateData();
     });
     

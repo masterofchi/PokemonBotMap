@@ -40,7 +40,7 @@ $sql_raids = "
       LEFT JOIN mapadroid.gym_team on mapadroid.gym_team.name = gyms.gym_name
       LEFT JOIN pokemon_i18n ON pokemon_i18n.pokedex_id = pokemon.pokedex_id AND pokemon_i18n.language = '" . LANGUAGE . "' 
     WHERE raids.end_time > NOW()
-      AND raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour
+      AND raids.end_time < NOW() + INTERVAL " . MAP_RAID_END_TIME_OFFSET_HOURS . " hour 
     GROUP BY  gyms.gym_name
     ORDER BY  raids.end_time ASC";
 
@@ -91,15 +91,20 @@ try {
     exit();
 }
 
-
-foreach ($rows as $row => $value) {
+$rows = array_map(function($row) use ($attendees){
+    $filtered_attendees = array_filter($attendees, function($attendence) use($row){
+        return $attendence['raid_id'] == $row['id'];
+    });
     
-    foreach($attendees as $attendee => $atten){
-        if ($value['id'] == $atten['raid_id']) {
-            $rows[$row]['raiders'][$atten['attend_time']] = $atten;
-        }
-    }
-}
+    $grouped_attendees = array_reduce($filtered_attendees, function($result, $attendence){
+        $result[$attendence['attend_time']][] = $attendence;
+        return $result;
+    }, []);
+    
+    $row['raiders'] = empty($grouped_attendees) ? null : $grouped_attendees;
+    
+    return $row;
+}, $rows);
 
 
 print json_encode($rows);
