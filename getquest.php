@@ -10,10 +10,8 @@ $dbh->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 
 $sql = "
       SELECT
-        mapadroid.pokestops.external_id,
         mapadroid.pokestops.lat,
         mapadroid.pokestops.lon,
-        mapadroid.trs_quest.quest_type,
         mapadroid.trs_quest.quest_stardust,
         mapadroid.trs_quest.quest_pokemon_id,
         mapadroid.trs_quest.quest_reward_type,
@@ -21,14 +19,14 @@ $sql = "
         mapadroid.trs_quest.quest_item_amount,
         replace(mapadroid.pokestops.name,'\"','') as name,
         mapadroid.pokestops.url,
-        mapadroid.trs_quest.quest_target,
-        replace(mapadroid.trs_quest.quest_condition,'\'', '\"') as quest_condition,
-        mapadroid.trs_quest.quest_timestamp,
-        mapadroid.trs_quest.quest_task
+        mapadroid.trs_quest.quest_task,
+        pogoraidbot.pokemon_i18n.pokemon_name as quest_pokemon_name
     FROM
         mapadroid.pokestops
-            INNER JOIN
-        mapadroid.trs_quest ON (mapadroid.pokestops.external_id COLLATE utf8mb4_general_ci) = mapadroid.trs_quest.GUID
+        INNER JOIN
+            mapadroid.trs_quest ON (mapadroid.pokestops.external_id COLLATE utf8mb4_general_ci) = mapadroid.trs_quest.GUID
+        LEFT JOIN 
+            pogoraidbot.pokemon_i18n on pogoraidbot.pokemon_i18n.pokedex_id = mapadroid.trs_quest.quest_pokemon_id and pogoraidbot.pokemon_i18n.language = '" . LANGUAGE . "'
     WHERE
         DATE(FROM_UNIXTIME(mapadroid.trs_quest.quest_timestamp,'%Y-%m-%d')) = CURDATE()
   ";
@@ -47,7 +45,7 @@ try {
     $dbh = null;
     exit();
 }
-print str_replace('True', '"True"',str_replace('False', '"False"',str_replace('"[','[',str_replace(']"', ']',str_replace('\\"','"',json_encode($rows))))));
+print json_encode($rows);
 
 $dbh = null;
 ?>
