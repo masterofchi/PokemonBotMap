@@ -1,97 +1,197 @@
-var settings = $.cookie('pogoraidmap_settings') != null ? JSON.parse($.cookie('pogoraidmap_settings')) : null;
-
-if(settings == null){
-	settings = {
-		'location': constants.mapbox_map_center,
-		'zoom': constants.mapbox_starting_zoom,
+var allStyles = [
+	{
+		'name': 'streets',
 		'style': 'streets-v10',
-		'layers': [
-			'show_exraids',
-			'show_raids5',
-			'show_raids4',
-			'show_raids3',
-			'show_raids2',
-			'show_raids1',
-			'show_exgyms',
-			'show_gyms'
-		]
-    };
-}
-	 
-$(document).ready(function(){	 
-    mapboxgl.accessToken = constants.mapbox_api_key;
-    
-    // Instantiate the map
-    var map = new mapboxgl.Map({
-        container: 'map', // container id
-        style: 'mapbox://styles/mapbox/' + settings.style, // initial style
-        center: settings.location, // starting position
-        zoom: settings.zoom // starting zoom
-    });
-    
-    // Add zoom and rotation controls to the map.
-    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
-    
-    // Add geolocate control to the map.
-    map.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true }), 'top-left');
-        
-    // Preload popup HTML templates
-    var raidPopupHtml;
-    var gymPopupHtml;
-    var pokemonPopupHtml
-    var attendanceHtml;
-    var questPopupHtml;
-    
-    var raidPopupPromise = $.get('templates/raid_popup.html');
-    var gymPopupPromise = $.get('templates/gym_popup.html');
-    var pokemonPopupPromise = $.get('templates/pokemon_popup.html');
-    var attendancePromise = $.get('templates/raid_attendance.html');
-    var questPopupPromise = $.get('templates/quest_popup.html');
-    
-    $.when(raidPopupPromise, gymPopupPromise, pokemonPopupPromise, attendancePromise, questPopupPromise)
-    	.done(function(raidData, gymData, pokemonData, attendanceData, questData) {
-			raidPopupHtml = raidData[0];
-			gymPopupHtml = gymData[0];
-	        pokemonPopupHtml = pokemonData[0];
-	        attendanceHtml = attendanceData[0];
-	        questPopupHtml = questData[0];
-	    });
-    
-    // Setup style settings
-    $('#layer_settings ul li input:radio[value="' + settings.style + '"]').prop('checked', 'checked');
-    
-    // Handle style switches
-    $('#layer_settings ul li input:radio[name="style"]').click(function() {
-    	map.setStyle('mapbox://styles/mapbox/' + $(this).attr('value'));
-    	settings.style = $(this).attr('value');
-    });
-    
-    // Setup layer settings
-    $('#layer_settings ul li input:checkbox').each(function(){
-    	if(settings.layers.includes($(this).attr('value'))){
-    		$(this).prop('checked', 'checked');
-    	}
-    	else{
-    		$(this).removeAttr('checked');
-    	}
-    });
-    
-    // Handle layer switches   
-    var lastUpdateTime = null;
+		'label': 'Stra&szlig;en'
+	},
+	{
+		'name': 'outdoors',
+		'style': 'outdoors-v10',
+		'label': 'Stra&szlig;en und Wege'
+	},
+	{
+		'name': 'light',
+		'style': 'light-v9',
+		'label': 'Hell'
+	},
+	{
+		'name': 'dark',
+		'style': 'dark-v9',
+		'label': 'Dunkel'
+	},
+	{
+		'name': 'satellite',
+		'style': 'satellite-v9',
+		'label': 'Satellit'
+	},
+	{
+		'name': 'satellite_streets',
+		'style': 'satellite-streets-v10',
+		'label': 'Satellit und Stra&szlig;en'
+	}
+];
 
-    $('#layer_settings ul li input:checkbox').click(function() {
-    	if($(this).is(':checked')){
-    		if(!settings.layers.includes($(this).attr('value'))){
-	    		settings.layers.push($(this).attr('value'));
-	    	}
-    	}
-    	else{
-    		settings.layers = settings.layers.filter(layer => layer != $(this).attr('value'));
-    	}
-    	
-    	lastUpdateTime = null;
-    	updateData();
-    }); 
+var allLayers = [
+	{
+		'name': 'raids',
+		'class': 'RaidsLayer',
+		'label': 'Raids',
+		'source': 'getraids.php'
+	},
+	{
+		'name': 'gyms',
+		'class': 'GymsLayer',
+		'label': 'Arenen',
+		'source': 'getgyms.php'
+	},
+	{
+		'name': 'quests',
+		'class': 'QuestsLayer',
+		'label': 'Feldforschungen',
+		'source': 'getquest.php'
+	},
+	{
+		'name': 'pokemon',
+		'class': 'PokemonLayer',
+		'label': 'Pok&eacute;mon',
+		'source': 'getpokemon.php'
+	}
+];
+
+var allFilters = [
+	{
+		'layer': 'raids',
+		'label': 'Raids',
+		'filters': [
+			{
+				'name': 'raidsX',
+				'label': 'Ex-Raids'
+			},
+			{
+				'name': 'raids1',
+				'label': 'Level 1 Raids'
+			},
+			{
+				'name': 'raids2',
+				'label': 'Level 2 Raids'
+			},
+			{
+				'name': 'raids3',
+				'label': 'Level 3 Raids'
+			},
+			{
+				'name': 'raids4',
+				'label': 'Level 4 Raids'
+			},
+			{
+				'name': 'raids5',
+				'label': 'Level 5 Raids'
+			}
+		]
+	},
+	{
+		'layer': 'gyms',
+		'label': 'Arenen',
+		'filters': [
+			{
+				'name': 'gymsX',
+				'label': 'Ex-Raid Arenen'
+			},
+			{
+				'name': 'gymsOther',
+				'label': 'andere Arenen'
+			},
+			{
+				'name': 'gymsFull',
+				'label': 'volle Arenen'
+			},
+			{
+				'name': 'gymsMystic',
+				'label': 'Team Weisheit'
+			},
+			{
+				'name': 'gymsValor',
+				'label': 'Team Wagemut'
+			},
+			{
+				'name': 'gymsInstinct',
+				'label': 'Team Intuition'
+			}		
+		]
+	},
+	{
+		'layer': 'quests',
+		'label': 'Feldforschungen',
+		'filters': [
+			{
+				'name': 'questsItems',
+				'label': 'Item Belohnung'
+			},
+			{
+				'name': 'questsStardust',
+				'label': 'Sternenstaub Belohnung'
+			},
+			{
+				'name': 'questsPokemon',
+				'label': 'Pokémon Belohnung'
+			}
+		]
+	},
+	{
+		'layer': 'pokemon',
+		'label': 'Pokémon',
+		'filters': [
+			{
+				'name': 'pokemonUrgent',
+				'label': 'Unter 5 Minuten'
+			}
+		]
+	}
+];
+
+var controls = {
+	'navigation': 'top-left',
+	'geolocation': 'top-left',
+	'layersmenu': 'top-right',
+	'filtermenu': 'top-center'
+};
+
+var templates = [
+	{
+		'name': 'raidPopup',
+		'url': 'templates/raid_popup.html'
+	},
+	{
+		'name': 'gymPopup',
+		'url': 'templates/gym_popup.html'
+	},
+	{
+		'name': 'pokemonPopup',
+		'url': 'templates/pokemon_popup.html'
+	},
+	{
+		'name': 'raidAttendance',
+		'url': 'templates/raid_attendance.html'
+	},
+	{
+		'name': 'questPopup',
+		'url': 'templates/quest_popup.html'
+	}
+];
+
+var settings = new pogomap.Settings(constants.mapbox_map_center, constants.mapbox_starting_zoom);
+var map = new pogomap.Map(settings, allStyles, allLayers, allFilters);
+
+document.addEventListener('DOMContentLoaded', event => {
+	map.init('map');	
+	map.registerControlPosition('top-center');
+	map.addControls(controls);
+	map.loadTemplates(templates).then(() => {	
+		map.load();
+	});
+});
+
+/*
     
     // Setup map data object
     var mapData = {
@@ -118,24 +218,24 @@ $(document).ready(function(){
     	
     	var promises = [];
     	
-	   	var gymsPromise = function(){ return $.getJSON('getgyms.php'); };
-	   	var raidPromise = function(){ return $.getJSON('getraids.php'); };
-	   	var pokemonPromise = function(){ return $.getJSON('getpokemon.php'); };
-	   	var questsPromise = function(){ return $.getJSON('getquest.php'); };
+	   	var gymsPromise = function(){ return pogomap.Ajax.getJSON('getgyms.php'); };
+	   	var raidPromise = function(){ return pogomap.Ajax.getJSON('getraids.php'); };
+	   	var pokemonPromise = function(){ return pogomap.Ajax.getJSON('getpokemon.php'); };
+	   	var questsPromise = function(){ return pogomap.Ajax.getJSON('getquest.php'); };
 	   	
-	   	if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   	if(settings.hasGymLayers()){
 	   		promises.push(gymsPromise());
 	   	}
 	   	
-	   	if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   	if(settings.hasRaidLayers()){
 	   		promises.push(raidPromise());
 	   	}
 	   	
-	   	if(settings.layers.includes('show_pokemon')){
+	   	if(settings.hasLayer('pokemon')){
 	   		promises.push(pokemonPromise());
 	   	}
 	   	
-	   	if(settings.layers.includes('show_quests')){
+	   	if(settings.hasLayer('quests')){
 	   		promises.push(questsPromise());
 	   	}
 	   	
@@ -143,35 +243,35 @@ $(document).ready(function(){
 	   		var index = 0;
 	   		var gym_data = [], raid_data = [], pokemon_data = [], quests_data = [];
 	   		
-	   		if(settings.layers.some(layer => { return layer.includes('gym'); } )){
+	   		if(settings.hasGymLayers()){
 	   			gym_data = data[index++];
 	   		}
 	   		
-	   		if(settings.layers.some(layer => { return layer.includes('raid'); })){
+	   		if(settings.hasRaidLayers()){
 	   			raid_data = data[index++];
 	   		}
 	   		
-	   		if(settings.layers.includes('show_pokemon')){
+	   		if(settings.hasLayer('pokemon')){
 	   			pokemon_data = data[index++];
 	   		}
 	   		
-	   		if(settings.layers.includes('show_quests')){
+	   		if(settings.hasLayer('quests')){
 	   			quests_data = data[index++];
 	   		}
 	   		
-	   		mapData.exraids = settings.layers.includes('show_exraids') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 'X')) : null;
-	   		mapData.raids5 = settings.layers.includes('show_raids5') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 5)) : null;
-	   		mapData.raids4 = settings.layers.includes('show_raids4') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 4)) : null;
-	   		mapData.raids3 = settings.layers.includes('show_raids3') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 3)) : null;
-	   		mapData.raids2 = settings.layers.includes('show_raids2') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 2)) : null;
-	   		mapData.raids1 = settings.layers.includes('show_raids1') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 1)) : null;
+	   		mapData.exraids = settings.hasLayer('raidsX') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 'X')) : null;
+	   		mapData.raids5 = settings.hasLayer('raids5') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 5)) : null;
+	   		mapData.raids4 = settings.hasLayer('raids4') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 4)) : null;
+	   		mapData.raids3 = settings.hasLayer('raids3') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 3)) : null;
+	   		mapData.raids2 = settings.hasLayer('raids2') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 2)) : null;
+	   		mapData.raids1 = settings.hasLayer('raids1') ? buildRaidLayerJson(raid_data.filter(raid => raid.raid_level == 1)) : null;
 	   		
-	   		mapData.exgyms = settings.layers.includes('show_exgyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, true)) : null;
-	   		mapData.gyms = settings.layers.includes('show_gyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, false)) : null;
+	   		mapData.exgyms = settings.hasLayer('gymsX') ? buildGymLayerJson(filterGyms(gym_data, raid_data, true)) : null;
+	   		mapData.gyms = settings.hasLayer('gyms') ? buildGymLayerJson(filterGyms(gym_data, raid_data, false)) : null;
 	   		
-	   		mapData.pokemon = settings.layers.includes('show_pokemon') ? buildPokemonLayerJson(pokemon_data) : null;
+	   		mapData.pokemon = settings.hasLayer('pokemon') ? buildPokemonLayerJson(pokemon_data) : null;
 	   		
-	   		mapData.quests = settings.layers.includes('show_quests') ? buildQuestsLayerJson(quests_data) : null;
+	   		mapData.quests = settings.hasLayer('quests') ? buildQuestsLayerJson(quests_data) : null;
 	   		
 	   		updateMap();
 	   	});
@@ -181,7 +281,7 @@ $(document).ready(function(){
     
     var filterGyms = function(gyms, raids, filterForExGyms){
         var result = gyms;
-        var show_raid_levels = settings.layers.map(layer => layer == 'show_exraids' ? 'X' : layer.substr(layer.length - 1, layer.length));
+        var show_raid_levels = settings.getLayers().map(layer => layer.substr(layer.length - 1, layer.length));
         
         if(filterForExGyms){
             result = gyms.filter(gym => gym.ex_gym == 1)
@@ -510,11 +610,11 @@ $(document).ready(function(){
     
     map.on('moveend', function(){
     	var location = map.getCenter();
-    	settings.location = [ location.lng, location.lat ];
+    	settings.setLocation([ location.lng, location.lat ]);
     });
     
     map.on('zoomend', function(){
-    	settings.zoom = map.getZoom();
+    	settings.setZoom(map.getZoom());
     });
 			 
 	var handleClick = function (e) {
@@ -564,8 +664,4 @@ $(document).ready(function(){
 			};
     	}
 	 }
-});
- 
-$(window).on('unload', function(){		 
-		 $.cookie('pogoraidmap_settings', JSON.stringify(settings), { expires: 30 });
-});
+});*/
