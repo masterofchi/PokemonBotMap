@@ -1,77 +1,68 @@
-(function(pogomap, undefined) {
-	pogomap.Settings = function(defaultLocation, defaultZoom) {
-		const storageName = 'pogomapSettings';
-		const defaultSettings = {
-			'location' : defaultLocation,
-			'zoom' : defaultZoom,
-			'style' : 'streets-v10',
-			'layers' : [ 
-				'raids',  
-				'gyms' 
-			]
-		};
-		
-		var settings;
+(function (pogomap) {
+    pogomap.Settings = function (defaultLocation, defaultZoom) {
+        const storageName = 'pogomapSettings';
+        const defaultSettings = {
+            'location': defaultLocation,
+            'zoom': defaultZoom,
+            'style': 'streets-v10',
+            'layers': [
+                'raids',
+                'gyms'
+            ]
+        };
 
-		if (localStorage.getItem(storageName)) {
-			settings = JSON.parse(localStorage.getItem(storageName));
-		} 
-		else {
-			settings = defaultSettings;
-		}
-		
-		this.getLocation = function(){
-			return settings.location;
-		};
-		
-		this.setLocation = function(value){
-			settings.location = value;
-		};
-		
-		this.getZoom = function(){
-			return settings.zoom;
-		};
-		
-		this.setZoom = function(value){
-			settings.zoom = value;
-		};
-		
-		this.getStyle = function(){
-			return settings.style;
-		};
-		
-		this.setStyle = function(value){
-			settings.style = value;
-		};
-		
-		this.getLayers = function(){
-			return settings.layers;
-		};
-		
-		this.hasLayer = function(name){
-			return settings.layers.includes(name);
-		};
-		
-		this.addLayer = function(name){
-			settings.layers.push(name);
-		};
-		
-		this.removeLayer = function(name){
-			settings.layers = settings.layers.filter(layer => layer != name);
-		};
-		
-		this.hasGymLayers = function(){
-			return settings.layers.some(layer => { return layer.includes('gym'); } );
-		};
-		
-		this.hasRaidLayers = function(){
-			return settings.layers.some(layer => { return layer.includes('raid'); });
-		};
+        let settings;
 
-		this.save = function() { 
-			localStorage.setItem(storageName, JSON.stringify(settings));
-		};
-			
-		window.addEventListener('unload', this.save);
-	};
+        if (localStorage.getItem(storageName)) {
+            settings = JSON.parse(localStorage.getItem(storageName));
+        } else {
+            settings = defaultSettings;
+        }
+
+        this.getLocation = function () {
+            return settings.location;
+        };
+
+        this.setLocation = function (value) {
+            settings.location = value;
+        };
+
+        this.getZoom = function () {
+            return settings.zoom;
+        };
+
+        this.setZoom = function (value) {
+            settings.zoom = value;
+        };
+
+        this.getStyle = function () {
+            return settings.style;
+        };
+
+        this.setStyle = function (value) {
+            settings.style = value;
+        };
+
+        this.getLayers = function () {
+            return settings.layers;
+        };
+
+        this.hasLayer = function (name) {
+            return settings.layers.includes(name);
+        };
+
+        this.addLayer = function (name) {
+            settings.layers.push(name);
+        };
+
+        this.removeLayer = function (name) {
+            settings.layers = settings.layers.filter(layer => layer !== name);
+        };
+
+        this.save = function () {
+            localStorage.setItem(storageName, JSON.stringify(settings));
+        };
+
+        window.addEventListener('unload', this.save);
+    };
 }(window.pogomap = window.pogomap || {}));

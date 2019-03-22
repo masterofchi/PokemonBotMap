@@ -1,33 +1,32 @@
-(function(pogomap, undefined) {
-	pogomap.Template = function(url) {
-		const filePath = url;
-		var content = null;
-		var loadingComplete = false;
-		
-		this.load = function(){		
-			return pogomap.Ajax.get(filePath).then(data => {
-				content = data;
-				loadingComplete = true;
-			});
-		};
-		
-		this.render = function(obj){			
-			if(loadingComplete){
-				return replacePlaceholders(obj);
-			}
-			else{
-				throw new Error('loading of template not yet completed!');
-			}
-		};
-		
-		var replacePlaceholders = function(obj){			
-			var result = content;
-			
-			for (const key in obj){
-	    		result = result.split('##' + key + '##').join(obj[key]);
-	    	}
-			
-			return result;
-		};
-	}
+(function (pogomap) {
+    pogomap.Template = function (name, layer, url) {
+        this.name = name;
+        this.layer = layer;
+        this.url = url;
+        let template = null;
+        let loadingComplete = false;
+
+        this.load = function () {
+            return pogomap.Ajax.get(url).then(data => {
+                template = data;
+                loadingComplete = true;
+            });
+        };
+
+        this.render = function (objectToRender) {
+            if (loadingComplete) {
+                let result = template;
+
+                for (const key in objectToRender) {
+                    if (objectToRender.hasOwnProperty(key)) {
+                        result = result.split('##' + key + '##').join(objectToRender[key]);
+                    }
+                }
+
+                return result;
+            } else {
+                throw new Error('loading of template not yet completed!');
+            }
+        };
+    }
 }(window.pogomap = window.pogomap || {}));
