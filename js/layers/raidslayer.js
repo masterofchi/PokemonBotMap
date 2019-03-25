@@ -38,21 +38,21 @@
                 minute: '2-digit'
             });
 
-            var remaining = [];
+            const remaining = [];
 
             if (raid.t_left > 3600) {
-                var hours = Math.floor(raid.t_left / 3600);
+                const hours = Math.floor(raid.t_left / 3600);
                 remaining.push(hours + ' Stunde' + (hours !== 1 ? 'n' : ''));
                 raid.t_left -= hours * 3600;
             }
 
             if (raid.t_left > 60) {
-                var minutes = Math.floor(raid.t_left / 60);
+                const minutes = Math.floor(raid.t_left / 60);
                 remaining.push(minutes + ' Minute' + (minutes !== 1 ? 'n' : ''));
                 raid.t_left -= minutes * 60;
             }
 
-            var seconds = raid.t_left;
+            const seconds = raid.t_left;
             remaining.push(seconds + ' Sekunde' + (seconds !== 1 ? 'n' : ''));
 
             raid.t_left_string = remaining.join(', ');
@@ -99,25 +99,26 @@
         };
 
         let getSearchString = function (raid) {
-            return raid.move_1 + raid.move_2 + raid.pokemon_name + raid.gym_name;
+            return raid.pokemon_name + ' ' + raid.gym_name + (raid.move_1 ? ' ' + raid.move_1 : '') + (raid.move_2 ? ' ' + raid.move_2 : '');
         };
-        
-        this.filterAcrossLayers = function(filteredFeatures, map){
-        	if(map.getLayer('gyms')){
-        		let filters = ['all'];
-        		
-        		filteredFeatures.forEach(feature => {
-    				filters.push(['!=', 'gymId', feature.properties.gymId]);
-    			});
-        		
-        		map.setFilter('gyms', filters);
-        	}
+
+        this.setFilterAcrossLayers = function (filteredFeatures, map) {
+            if (map.getLayer('gyms')) {
+                const filters = [];
+                filters.push('all');
+
+                filteredFeatures.forEach(feature => {
+                    filters.push(['!=', 'gymId', feature.properties.gymId]);
+                });
+
+                map.setFilter('gyms', filters);
+            }
         };
-        
-        this.onHide = function(map){
-        	if(map.getLayer('gyms')){
-        		map.setFilter('gyms', null);
-        	}
+
+        this.unsetFilterAcrossLayers = function (map) {
+            if (map.getLayer('gyms')) {
+                map.setFilter('gyms', null);
+            }
         };
     };
 }(window.layers = window.layers || {}));

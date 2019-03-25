@@ -177,23 +177,20 @@ body {
 }
 
 .gym-team-1, .gym-team-mystic {
-    background: url('../buidl/mystic_bg.png');
     background-size: 200px;
-    background-repeat: no-repeat;
+    background: url('../buidl/mystic_bg.png') no-repeat;
     background-position-y: -15px;
 }
 
 .gym-team-2, .gym-team-valor {
-    background: url('../buidl/valor_bg.png');
     background-size: 200px;
-    background-repeat: no-repeat;
+    background: url('../buidl/valor_bg.png') no-repeat;
     background-position-y: -15px;
 }
 
 .gym-team-3, .gym-team-instinct {
-    background: url('../buidl/instinct_bg.png');
     background-size: 200px;
-    background-repeat: no-repeat;
+    background: url('../buidl/instinct_bg.png') no-repeat;
     background-position-y: -15px;
 }
 

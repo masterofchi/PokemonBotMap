@@ -128,36 +128,36 @@
         };
 
         this.loadFeatures = (function () {
-        	let promises = [];
-        	let layerObjects = [];
-        	
+            let promises = [];
+            let layerObjects = [];
+
             settings.getLayers().forEach(layerName => {
                 const layerObject = this.layers.filter(layer => layer.name === layerName)[0];
                 promises.push(pogomap.Ajax.getJSON(layerObject.source));
                 layerObjects.push(layerObject);
             }, this);
-            
+
             Promise.all(promises).then(allData => {
-            	for(let i = 0; i < allData.length; i++){
-                    layerObjects[i].createFeatures(allData[i], filterTemplates(layerObjects[i].name));            		
-            	}
+                for (let i = 0; i < allData.length; i++) {
+                    layerObjects[i].createFeatures(allData[i], filterTemplates(layerObjects[i].name));
+                }
 
                 this.updateFeatures();
             });
         }).bind(this);
-        
-        let filterTemplates = (function(layerName){
-        	 return this.templates.reduce((templates, template) => {
-                 if (template.layer === layerName) {
-                     templates[template.name] = template;
-                 }
 
-                 return templates;
-             }, {});
+        let filterTemplates = (function (layerName) {
+            return this.templates.reduce((templates, template) => {
+                if (template.layer === layerName) {
+                    templates[template.name] = template;
+                }
+
+                return templates;
+            }, {});
         }).bind(this);
-        
-        let sortByZIndex = function(layer1, layer2){
-        	return layerSettings.filter(layer => layer.name === layer1)[0].zIndex - layerSettings.filter(layer => layer.name === layer2)[0].zIndex;
+
+        let sortByZIndex = function (layer1, layer2) {
+            return layerSettings.filter(layer => layer.name === layer1)[0].zIndex - layerSettings.filter(layer => layer.name === layer2)[0].zIndex;
         };
 
         this.updateFeatures = (function () {
@@ -166,7 +166,7 @@
                 return;
             }
 
-            settings.getLayers().sort(sortByZIndex).forEach(layerName => {                 
+            settings.getLayers().sort(sortByZIndex).forEach(layerName => {
                 const layerObject = this.layers.filter(layer => layer.name === layerName)[0];
                 let filteredFeatures = this.filterFeatures(layerObject.features);
 
@@ -181,9 +181,9 @@
                         data: {'type': 'FeatureCollection', 'features': filteredFeatures}
                     });
                 }
-                
-                if(typeof(layerObject.filterAcrossLayers) === 'function'){
-                	layerObject.filterAcrossLayers(filteredFeatures, this.map);
+
+                if (typeof (layerObject.setFilterAcrossLayers) === 'function') {
+                    layerObject.setFilterAcrossLayers(filteredFeatures, this.map);
                 }
 
                 if (!this.map.getLayer(layerObject.name)) {
@@ -218,7 +218,7 @@
             return features.filter(feature => {
                 return feature.properties.applicableFilters.every(
                     filter => {
-                        return this.activeFilters.includes(filter);     
+                        return this.activeFilters.includes(filter);
                     }
                 ) && (this.activeSearchString.length === 0 || feature.properties.searchString.toLowerCase().includes(this.activeSearchString.toLowerCase()));
             });
@@ -231,8 +231,8 @@
         }).bind(this);
 
         this.setLayerVisibility = (function (name, visible) {
-        	let reloadNeeded = false;
-        	
+            let reloadNeeded = false;
+
             if (visible) {
                 if (!settings.hasLayer(name)) {
                     settings.addLayer(name);
@@ -240,9 +240,8 @@
 
                 if (this.map.getLayer(name)) {
                     this.map.setLayoutProperty(name, 'visibility', 'visible');
-                }
-                else{
-                	reloadNeeded = true;
+                } else {
+                    reloadNeeded = true;
                 }
             } else {
                 settings.removeLayer(name);
@@ -250,19 +249,20 @@
                 if (this.map.getLayer(name)) {
                     this.map.setLayoutProperty(name, 'visibility', 'none');
                 }
-                
-                if(typeof(this.layers.filter(layer => layer.name === name)[0].onHide) === 'function'){
-                	this.layers.filter(layer => layer.name === name)[0].onHide(this.map);
+
+                let unsetFunction = this.layers.filter(layer => layer.name === name)[0].unsetFilterAcrossLayers;
+
+                if (typeof (unsetFunction) === 'function') {
+                    unsetFunction(this.map);
                 }
             }
 
             settings.save();
-            
-            if(reloadNeeded){
-            	this.loadFeatures();
-            }
-            else{
-            	this.updateFeatures();
+
+            if (reloadNeeded) {
+                this.loadFeatures();
+            } else {
+                this.updateFeatures();
             }
         }).bind(this);
 
