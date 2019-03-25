@@ -5,9 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     map.init('map');
     map.registerControlPosition('top-center');
     map.addControls(controls);
-    map.loadTemplates(templates).then(() => {
-        map.loadFeatures();
-    });
+    map.loadTemplates(templates);
 });
 
 /*
@@ -24,23 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }        
             
         return result.filter(gym => raids.filter(raid => show_raid_levels.includes(raid.raid_level) && raid.gym_id == gym.id).length == 0);
-    };
-    
-    var buildGymLayerJson = function(gyms) {
-		return gyms.map(gym => { 
-			return {
-                'type': 'Feature',
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [gym.lon, gym.lat]
-                },
-                'properties': {
-                    'title': gym.gym_name,
-                    'description': renderTemplate(gymPopupHtml, gym),
-                    'icon': loadTeamIcon(gym.team)
-                }
-  			}
-		});
     };
     
     var buildPokemonLayerJson = function(pokemons){
@@ -125,35 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     var loadedImages = [];
-    
-    var loadTeamIcon = function(team) {
-    	var name = 'gym';
-    	var url = 'buidl/gym.png';
-    	
-    	switch(team){
-	    	case '1':
-	    	case 'mystic':{
-	    		name = 'mystic';
-	    		url = 'buidl/mystic.png';
-	    		break;
-	    	}
-	    	case '2':
-	    	case 'valor':{
-				name = 'valor';
-				url = 'buidl/valor.png';
-				break;
-	    	}
-	    	case '3':
-	    	case 'instinct':{
-				name = 'instinct';
-				url = 'buidl/instinct.png';
-				break;
-	    	}
-    	}
-    	
-    	loadImage(name, url);
-        return name;
-    };
     
     var loadPokemonIcon = function(pokedex_id) {    	
     	var name = 'icon_pokedex_' + pokedex_id;

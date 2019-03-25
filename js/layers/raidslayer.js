@@ -21,7 +21,8 @@
                             'icon': pogomap.IconLoader.loadPokemonIcon(raid.pokedex_id, this.map),
                             'label': getLabel(raid),
                             'applicableFilters': getApplicableFilters(raid),
-                            'searchString': getSearchString(raid)
+                            'searchString': getSearchString(raid),
+                            'gymId': raid.gym_id
                         }
                     }
                 });
@@ -99,6 +100,24 @@
 
         let getSearchString = function (raid) {
             return raid.move_1 + raid.move_2 + raid.pokemon_name + raid.gym_name;
+        };
+        
+        this.filterAcrossLayers = function(filteredFeatures, map){
+        	if(map.getLayer('gyms')){
+        		let filters = ['all'];
+        		
+        		filteredFeatures.forEach(feature => {
+    				filters.push(['!=', 'gymId', feature.properties.gymId]);
+    			});
+        		
+        		map.setFilter('gyms', filters);
+        	}
+        };
+        
+        this.onHide = function(map){
+        	if(map.getLayer('gyms')){
+        		map.setFilter('gyms', null);
+        	}
         };
     };
 }(window.layers = window.layers || {}));

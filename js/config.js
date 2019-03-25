@@ -36,25 +36,29 @@ const allLayers = [
         'name': 'raids',
         'class': 'RaidsLayer',
         'label': 'Raids',
-        'source': 'getraids.php'
+        'source': 'getraids.php',
+        'zIndex': 1
     },
     {
         'name': 'gyms',
         'class': 'GymsLayer',
         'label': 'Arenen',
-        'source': 'getgyms.php'
+        'source': 'getgyms.php',
+        'zIndex': 0
     },
     {
         'name': 'quests',
         'class': 'QuestsLayer',
         'label': 'Feldforschungen',
-        'source': 'getquest.php'
+        'source': 'getquest.php',
+        'zIndex': 0
     },
     {
         'name': 'pokemon',
         'class': 'PokemonLayer',
         'label': 'Pok&eacute;mon',
-        'source': 'getpokemon.php'
+        'source': 'getpokemon.php',
+        'zIndex': 0
     }
 ];
 
