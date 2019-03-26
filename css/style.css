@@ -219,10 +219,12 @@ body {
     height: 128px;
     width: 128px;
     margin: 5px;
-    background-size: 128px 128px;
-    background-position: center;
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
     clip-path: circle(64px at center);
+    object-fit: cover;
+    object-position: center center;
 }
 
 .gym-info, .raid-info, .pokemon-info, .quest-info {

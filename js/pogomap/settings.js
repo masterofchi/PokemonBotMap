@@ -4,6 +4,8 @@
         const defaultSettings = {
             'location': defaultLocation,
             'zoom': defaultZoom,
+            'bearing': 0,
+            'pitch': 0,
             'style': 'streets-v10',
             'layers': [
                 'raids',
@@ -33,6 +35,22 @@
 
         this.setZoom = function (value) {
             settings.zoom = value;
+        };
+
+        this.getBearing = function () {
+            return settings.bearing;
+        };
+
+        this.setBearing = function (value) {
+            settings.bearing = value;
+        };
+
+        this.getPitch = function () {
+            return settings.pitch;
+        };
+
+        this.setPitch = function (value) {
+            settings.pitch = value;
         };
 
         this.getStyle = function () {

@@ -13,7 +13,9 @@
                 container: containerId,
                 style: 'mapbox://styles/mapbox/' + settings.getStyle(),
                 center: settings.getLocation(),
-                zoom: settings.getZoom()
+                zoom: settings.getZoom(),
+                pitch: settings.getPitch(),
+                bearing: settings.getBearing()
             });
 
             this.createLayers();
@@ -63,10 +65,27 @@
                 const newCenter = event.target.getCenter();
                 settings.setLocation([newCenter.lng, newCenter.lat]);
                 settings.save();
+
+                if (constants.use_geo_boundary) {
+                    this.loadFeatures();
+                }
             });
 
-            this.map.on('zoomend', event => {
+            let onZoomEnd = (function (event) {
                 settings.setZoom(event.target.getZoom());
+                settings.save();
+            }).bind(this);
+
+            this.map.on('zoomend', onZoomEnd);
+            this.map.on('boxzoomend', onZoomEnd);
+
+            this.map.on('pitchend', event => {
+                settings.setPitch(event.target.getPitch());
+                settings.save();
+            });
+
+            this.map.on('rotateend', event => {
+                settings.setBearing(event.target.getBearing());
                 settings.save();
             });
         };
@@ -133,7 +152,8 @@
 
             settings.getLayers().forEach(layerName => {
                 const layerObject = this.layers.filter(layer => layer.name === layerName)[0];
-                promises.push(pogomap.Ajax.getJSON(layerObject.source));
+                const url = layerObject.source + (constants.use_geo_boundary ? '?geoBoundary=' + getGeoBoundaryString() : '');
+                promises.push(pogomap.Ajax.getJSON(url));
                 layerObjects.push(layerObject);
             }, this);
 
@@ -144,6 +164,22 @@
 
                 this.updateFeatures();
             });
+        }).bind(this);
+
+        let getGeoBoundaryString = function () {
+            return JSON.stringify(getGeoBoundary());
+        };
+
+        let getGeoBoundary = (function () {
+            const canvas = this.map.getCanvas();
+            let {width, height} = canvas;
+
+            return {
+                upperLeft: this.map.unproject([0, 0]).toArray(),
+                upperRight: this.map.unproject([width, 0]).toArray(),
+                lowerLeft: this.map.unproject([0, height]).toArray(),
+                lowerRight: this.map.unproject([width, height]).toArray()
+            };
         }).bind(this);
 
         let filterTemplates = (function (layerName) {
