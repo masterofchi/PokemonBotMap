@@ -10,7 +10,8 @@
             'layers': [
                 'raids',
                 'gyms'
-            ]
+            ],
+            'language': 'de'
         };
 
         let settings;
@@ -75,6 +76,14 @@
 
         this.removeLayer = function (name) {
             settings.layers = settings.layers.filter(layer => layer !== name);
+        };
+
+        this.getLanguage = function () {
+            return settings.language;
+        };
+
+        this.setLanguage = function (value) {
+            settings.language = value;
         };
 
         this.save = function () {

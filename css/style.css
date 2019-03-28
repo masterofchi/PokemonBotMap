@@ -156,6 +156,7 @@ body {
 .gym-popup, .raid-popup, .pokemon-popup, .quest-popup {
     width: 200px;
     text-align: center;
+    background-size: 200px auto !important;
 }
 
 .gym-exgym {
@@ -177,21 +178,15 @@ body {
 }
 
 .gym-team-1, .gym-team-mystic {
-    background-size: 200px;
-    background: url('../buidl/mystic_bg.png') no-repeat;
-    background-position-y: -15px;
+    background: url('../buidl/mystic_bg.png') no-repeat center -15px;
 }
 
 .gym-team-2, .gym-team-valor {
-    background-size: 200px;
-    background: url('../buidl/valor_bg.png') no-repeat;
-    background-position-y: -15px;
+    background: url('../buidl/valor_bg.png') no-repeat center -15px;
 }
 
 .gym-team-3, .gym-team-instinct {
-    background-size: 200px;
-    background: url('../buidl/instinct_bg.png') no-repeat;
-    background-position-y: -15px;
+    background: url('../buidl/instinct_bg.png') no-repeat center -15px;
 }
 
 .gym-image, .raid-image, .pokemon-image, .quest-image {
@@ -234,7 +229,7 @@ body {
     border: 1px solid;
 }
 
-.gym-name, .raid-gym-name, .raid-boss, .pokemon-name, .quest-stop-name {
+.gym-name, .raid-gym-name, .raid-boss, .pokemon-name, .quest-stop-name, .quest-reward {
     font-weight: bold;
     font-size: 1.3em;
     margin-top: 10px;

@@ -153,6 +153,13 @@ const allFilters = [
     }
 ];
 
+const allLanguages = [
+    {
+        'name': 'de',
+        'label': 'Deutsch'
+    }
+];
+
 const controls = {
     'navigation': 'top-left',
     'geolocation': 'top-left',

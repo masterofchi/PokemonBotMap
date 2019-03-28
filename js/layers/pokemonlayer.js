@@ -31,17 +31,17 @@
             const tthParts = [];
 
             if (timeParts[0] > 0) {
-                tthParts.push(Number(timeParts[0]) + ' Stunde' + (Number(timeParts[0]) !== 1 ? 'n' : ''));
+                tthParts.push(Number(timeParts[0]) + ' ' + (Number(timeParts[0]) === 1 ? pogomap.Translator.get('HOUR') : pogomap.Translator.get('HOURS')));
             }
 
-            tthParts.push(Number(timeParts[1]) + ' Minute' + (Number(timeParts[1]) !== 1 ? 'n' : ''));
+            tthParts.push(Number(timeParts[1]) + ' ' + (Number(timeParts[1]) === 1 ? pogomap.Translator.get('MINUTE') : pogomap.Translator.get('MINUTES')));
 
             if (Number(timeParts[0]) === 0 && timeParts[1] < 5) {
                 pokemon.urgent = 1;
-                pokemon.tth_string = 'Unter 5 Minuten'
+                pokemon.tth_string = pogomap.Translator.get('BELOW_FIVE_MINUTES');
             } else {
                 pokemon.urgent = 0;
-                pokemon.tth_string = 'Noch ' + tthParts.join(', ');
+                pokemon.tth_string = pogomap.TemplateHelper.replacePlaceholders(pogomap.Translator.get('TIME_REMAINING'), 'time_remaining', tthParts.join(', '));
             }
 
             return pokemon;

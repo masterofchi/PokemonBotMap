@@ -19,13 +19,13 @@
 
                 for (const key in objectToRender) {
                     if (objectToRender.hasOwnProperty(key)) {
-                        result = result.split('##' + key + '##').join(objectToRender[key]);
+                        result = pogomap.TemplateHelper.replacePlaceholders(result, key, objectToRender[key]);
                     }
                 }
 
                 return result;
             } else {
-                throw new Error('loading of template not yet completed!');
+                throw new Error('Loading of template not yet completed!');
             }
         };
     }

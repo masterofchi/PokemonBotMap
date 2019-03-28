@@ -31,16 +31,19 @@
                 case('2'): {
                     quest.reward_amount = quest.quest_item_amount + 'x ';
                     quest.reward_image = 'buidl/quests/quest_reward_' + quest.quest_item_id + '.png';
+                    quest.reward_name = pogomap.Translator.get('ITEM_' + quest.quest_item_id);
                     break;
                 }
                 case('3'): {
                     quest.reward_amount = quest.quest_stardust + ' ';
                     quest.reward_image = 'buidl/quests/quest_reward_stardust.png';
+                    quest.reward_name = pogomap.Translator.get('STARDUST');
                     break;
                 }
                 case('7'): {
                     quest.reward_amount = '';
                     quest.reward_image = 'buidl/' + constants.map_icon_pack + '/id_' + quest.quest_pokemon_id + '.png';
+                    quest.reward_name = quest.quest_pokemon_name;
                     break;
                 }
             }
@@ -71,7 +74,7 @@
         };
 
         let getSearchString = function (quest) {
-            return quest.name + ' ' + quest.quest_task + (quest.quest_pokemon_name ? ' ' + quest.quest_pokemon_name : '');
+            return quest.name + ' ' + quest.quest_task + ' ' + quest.reward_name;
         };
     };
 }(window.layers = window.layers || {}));
