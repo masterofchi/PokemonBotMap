@@ -1,5 +1,5 @@
 (function (pogomap, mapbox) {
-    pogomap.Map = function (settings, styleSettings, layerSettings, filterSettings) {
+    pogomap.Map = function (settings, styleSettings, layerSettings, filterSettings, languageSettings) {
         mapbox.accessToken = constants.mapbox_api_key;
         this.map = undefined;
         this.templates = [];

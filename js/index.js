@@ -1,5 +1,5 @@
 let settings = new pogomap.Settings(constants.mapbox_map_center, constants.mapbox_starting_zoom);
-let map = new pogomap.Map(settings, allStyles, allLayers, allFilters);
+let map = new pogomap.Map(settings, allStyles, allLayers, allFilters, allLanguages);
 
 document.addEventListener('DOMContentLoaded', () => {
     pogomap.Translator.init(settings.getLanguage()).then(() => {
