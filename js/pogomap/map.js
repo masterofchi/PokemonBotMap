@@ -119,7 +119,6 @@
             if (controlSettings.languagemenu && languageSettings.length > 1) {
                 this.map.addControl(new pogomap.LanguageControl({
                     'languages': languageSettings,
-                    'currentLanguage': settings.getLanguage(),
                     'languageCallback': this.setLanguage
                 }), controlSettings.languagemenu);
             }
