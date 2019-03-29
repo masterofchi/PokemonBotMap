@@ -1,5 +1,5 @@
 (function (pogomap) {
-    pogomap.Settings = function (defaultLocation, defaultZoom) {
+    pogomap.Settings = function (defaultLocation, defaultZoom, defaultLanguage) {
         const storageName = 'pogomapSettings';
         const defaultSettings = {
             'location': defaultLocation,
@@ -11,7 +11,7 @@
                 'raids',
                 'gyms'
             ],
-            'language': 'de'
+            'language': defaultLanguage
         };
 
         let settings;

@@ -1,4 +1,4 @@
-let settings = new pogomap.Settings(constants.mapbox_map_center, constants.mapbox_starting_zoom);
+let settings = new pogomap.Settings(constants.mapbox_map_center, constants.mapbox_starting_zoom, constants.default_language);
 let map = new pogomap.Map(settings, allStyles, allLayers, allFilters, allLanguages);
 
 document.addEventListener('DOMContentLoaded', () => {
