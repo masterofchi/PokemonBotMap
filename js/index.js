@@ -3,9 +3,10 @@ let map = new pogomap.Map(settings, allStyles, allLayers, allFilters, allLanguag
 
 document.addEventListener('DOMContentLoaded', () => {
     pogomap.Translator.init(settings.getLanguage()).then(() => {
-        map.init('map');
-        map.registerControlPosition('top-center');
-        map.addControls(controls);
-        map.loadTemplates(templates);
+        map.loadTemplates(templates).then(() => {
+            map.init('map');
+            map.registerControlPosition('top-center');
+            map.addControls(controls);
+        });
     });
 });

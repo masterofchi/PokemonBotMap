@@ -157,12 +157,21 @@ const allLanguages = [
     {
         'name': 'de',
         'label': 'Deutsch'
-    }
+    },
+    /*{
+        'name': 'en-uk',
+        'label': 'British English'
+    },
+    {
+        'name': 'en-us',
+        'label': 'American English'
+    }*/
 ];
 
 const controls = {
     'navigation': 'top-left',
     'geolocation': 'top-left',
+    'languagemenu': 'top-right',
     'layersmenu': 'top-right',
     'filtermenu': 'top-center'
 };

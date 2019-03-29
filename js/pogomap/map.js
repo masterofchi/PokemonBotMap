@@ -37,6 +37,7 @@
                         const popupContent = clickEvent.features[0].properties.popupContent;
 
                         while (Math.abs(clickEvent.lngLat.lng - coordinates[0]) > 180) {
+                            // noinspection JSValidateTypes
                             coordinates[0] += clickEvent.lngLat.lng > coordinates[0] ? 360 : -360;
                         }
 
@@ -113,6 +114,14 @@
                     },
                     'trackUserLocation': true
                 }), controlSettings.geolocation);
+            }
+
+            if (controlSettings.languagemenu && languageSettings.length > 1) {
+                this.map.addControl(new pogomap.LanguageControl({
+                    'languages': languageSettings,
+                    'currentLanguage': settings.getLanguage(),
+                    'languageCallback': this.setLanguage
+                }), controlSettings.languagemenu);
             }
 
             if (controlSettings.layersmenu) {
@@ -267,7 +276,7 @@
         }).bind(this);
 
         this.setLayerVisibility = (function (name, visible) {
-            let reloadNeeded = false;
+            let featureReloadNeeded = false;
 
             if (visible) {
                 if (!settings.hasLayer(name)) {
@@ -277,7 +286,7 @@
                 if (this.map.getLayer(name)) {
                     this.map.setLayoutProperty(name, 'visibility', 'visible');
                 } else {
-                    reloadNeeded = true;
+                    featureReloadNeeded = true;
                 }
             } else {
                 settings.removeLayer(name);
@@ -295,11 +304,17 @@
 
             settings.save();
 
-            if (reloadNeeded) {
+            if (featureReloadNeeded) {
                 this.loadFeatures();
             } else {
                 this.updateFeatures();
             }
+        }).bind(this);
+
+        this.setLanguage = (function (language) {
+            settings.setLanguage(language);
+            settings.save();
+            location.reload();
         }).bind(this);
 
         this.filterLayers = (function (newActiveFilters) {

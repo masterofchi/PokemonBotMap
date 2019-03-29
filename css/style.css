@@ -31,7 +31,7 @@ body {
     display: inline-block;
 }
 
-#layer-settings, #layer-settings *, #filter-settings, #filter-settings * {
+#layer-settings, #layer-settings *, #filter-settings, #filter-settings *, #language-settings, #language-settings * {
     cursor: pointer;
 }
 
@@ -48,7 +48,7 @@ body {
     }
 }
 
-#layer-settings ul, #filter-settings ul {
+#layer-settings ul, #filter-settings ul, #language-settings ul {
     list-style-type: none;
     padding: 0;
     margin: 0.7em;
@@ -64,16 +64,40 @@ body {
     background: url('../buidl/layers.png');
 }
 
-#layer-settings ul li, #filter-settings ul li {
+#language-settings ul {
+    background-repeat: no-repeat;
+    background-position: center 6px;
+    background-size: contain;
+}
+
+#language-settings .language-de {
+    background-image: url('../buidl/flags/de.png');
+}
+
+#language-settings .language-en-uk {
+    background-image: url('../buidl/flags/en-uk.png');
+}
+
+#language-settings .language-en-us {
+    background-image: url('../buidl/flags/en-us.png');
+}
+
+#layer-settings ul li, #filter-settings ul li, #language-settings ul li {
     display: none;
 }
 
-#layer-settings:hover ul, #filter-settings:hover ul {
+#layer-settings:hover ul, #filter-settings:hover ul, #language-settings:hover ul {
     background-image: none;
 }
 
-#layer-settings:hover ul li, #filter-settings:hover ul li {
+#layer-settings:hover ul li, #filter-settings:hover ul li, #language-settings:hover ul li {
     display: block;
+}
+
+#language-settings ul li label {
+    padding-left: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #filter-settings .filter-search {
