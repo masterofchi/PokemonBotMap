@@ -41,7 +41,19 @@
                             coordinates[0] += clickEvent.lngLat.lng > coordinates[0] ? 360 : -360;
                         }
 
-                        new mapboxgl.Popup()
+                        const markerRadius = 32, linearOffset = 16;
+                        const popupOffsets = {
+                            'top': [0, 0],
+                            'top-left': [linearOffset, 0],
+                            'top-right': [-linearOffset, 0],
+                            'bottom': [0, -markerRadius - linearOffset],
+                            'bottom-left': [linearOffset, -markerRadius - linearOffset],
+                            'bottom-right': [-linearOffset, -markerRadius - linearOffset],
+                            'left': [markerRadius, -linearOffset],
+                            'right': [-markerRadius, -linearOffset]
+                        };
+
+                        new mapboxgl.Popup({offset: popupOffsets})
                             .setLngLat(coordinates)
                             .setHTML(popupContent)
                             .addTo(event.target);
