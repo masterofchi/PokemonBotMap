@@ -1,6 +1,6 @@
 <?php
 // Use same config as bot
-require_once ("config.php");
+require_once("config.php");
 
 // Establish mysql connection.
 $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASSWORD, array(
@@ -28,6 +28,7 @@ $sql_raids = "
       moves.move_1 as move_1,
       moves.move_2 as move_2,
       cleanup.chat_id as chat_id,
+      cleanup.chat_name as chat_name,
       cleanup.message_id as message_id,
       mapadroid.gym_team.team as team,
       mapadroid.gym_team.image_link as image_link
@@ -66,48 +67,56 @@ $sql_raiders = "
 
 $rows = array();
 try {
-    
+
     $result = $dbh->query($sql_raids);
     while ($raid = $result->fetch(PDO::FETCH_ASSOC)) {
-        
+
         $rows[] = $raid;
     }
 } catch (PDOException $exception) {
-    
+
     error_log($exception->getMessage());
     $dbh = null;
     exit();
 }
 try {
-    
+
     $result = $dbh->query($sql_raiders);
     while ($raiders = $result->fetch(PDO::FETCH_ASSOC)) {
         $attendees[] = $raiders;
     }
 } catch (PDOException $exception) {
-    
+
     error_log($exception->getMessage());
     $dbh = null;
     exit();
 }
 
-$rows = array_map(function($row) use ($attendees){
-    $filtered_attendees = array_filter($attendees, function($attendence) use($row){
+$rows = array_map(function ($row) use ($attendees) {
+    $filtered_attendees = array_filter($attendees, function ($attendence) use ($row) {
         return $attendence['raid_id'] == $row['id'];
     });
-    
-    $grouped_attendees = array_reduce($filtered_attendees, function($result, $attendence){
+
+    $grouped_attendees = array_reduce($filtered_attendees, function ($result, $attendence) {
         $result[$attendence['attend_time']][] = $attendence;
         return $result;
     }, []);
-    
+
     $row['raiders'] = empty($grouped_attendees) ? null : $grouped_attendees;
-    
+
     return $row;
 }, $rows);
 
+if (defined('USE_GEO_BOUNDARY') && USE_GEO_BOUNDARY && !empty($_GET['geoBoundary'])) {
+    require_once('geoboundary.php');
 
-print json_encode($rows);
+    $boundary = json_decode($_GET['geoBoundary']);
+    $result = getItemsInBoundary($rows, $boundary);
+} else {
+    $result = $rows;
+}
+
+print json_encode($result);
 
 $dbh = null;
 ?>

@@ -1,13 +1,13 @@
 <?php
-  //Use same config as bot
-  require_once("config.php");
+//Use same config as bot
+require_once("config.php");
 
-  // Establish mysql connection.
-  $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-  $dbh->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+// Establish mysql connection.
+$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASSWORD, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+$dbh->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
 
-  $rows = array();  
-  try {
+$rows = array();
+try {
 
     $sql = "SELECT 
                 pokemon_sightings.pokemon_id,
@@ -19,20 +19,28 @@
                 pokemon_sightings
                 LEFT JOIN pokemon_i18n on pokemon_i18n.pokedex_id = pokemon_sightings.pokemon_id AND pokemon_i18n.language = '" . LANGUAGE . "'";
     $result = $dbh->query($sql);
-    
-    while($pokemon = $result->fetch(PDO::FETCH_ASSOC)) {
+
+    while ($pokemon = $result->fetch(PDO::FETCH_ASSOC)) {
 
         $rows[] = $pokemon;
     }
-  }
-  catch (PDOException $exception) {
+} catch (PDOException $exception) {
 
     error_log($exception->getMessage());
     $dbh = null;
     exit;
-  }
+}
 
-  print json_encode($rows);
+if (defined('USE_GEO_BOUNDARY') && USE_GEO_BOUNDARY && !empty($_GET['geoBoundary'])) {
+    require_once('geoboundary.php');
 
-  $dbh = null;
+    $boundary = json_decode($_GET['geoBoundary']);
+    $result = getItemsInBoundary($rows, $boundary);
+} else {
+    $result = $rows;
+}
+
+print json_encode($result);
+
+$dbh = null;
 ?>

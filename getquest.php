@@ -1,6 +1,6 @@
 <?php
 // Use same config as bot
-require_once ("config.php");
+require_once("config.php");
 
 // Establish mysql connection.
 $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4", DB_USER, DB_PASSWORD, array(
@@ -33,19 +33,29 @@ $sql = "
 
 $rows = array();
 try {
-    
+
     $result = $dbh->query($sql);
     while ($stops = $result->fetch(PDO::FETCH_ASSOC)) {
-        
+
         $rows[] = $stops;
     }
 } catch (PDOException $exception) {
-    
+
     error_log($exception->getMessage());
     $dbh = null;
     exit();
 }
-print json_encode($rows);
+
+if (defined('USE_GEO_BOUNDARY') && USE_GEO_BOUNDARY && !empty($_GET['geoBoundary'])) {
+    require_once('geoboundary.php');
+
+    $boundary = json_decode($_GET['geoBoundary']);
+    $result = getItemsInBoundary($rows, $boundary);
+} else {
+    $result = $rows;
+}
+
+print json_encode($result);
 
 $dbh = null;
 ?>

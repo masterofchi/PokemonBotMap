@@ -1,177 +1,308 @@
 html {
-	height: 100%
+    height: 100%
 }
 
 body {
-	height: 100%;
-	margin: 0;
-	padding: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 #map {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
 }
 
-#layer_settings, #layer_settings * {
-	cursor: pointer;
+.mapboxgl-ctrl-top-center {
+    top: 0;
+    width: 100%;
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#layer_settings ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0.7em;
-	min-width: 26px;
-	min-height: 26px;
-	background: url('../buidl/layers.png');
+.mapboxgl-ctrl-top-center .mapboxgl-ctrl {
+    margin: 10px 0;
+    display: inline-block;
 }
 
-#layer_settings ul li {
-	display: none;
+#layer-settings, #layer-settings *, #filter-settings, #filter-settings *, #language-settings, #language-settings * {
+    cursor: pointer;
 }
 
-#layer_settings:hover ul {
-	background-image: none;
+@media only screen and (min-width: 520px) {
+    #filter-settings:hover {
+        width: 500px;
+    }
 }
 
-#layer_settings:hover ul li {
-	display: block;
+@media only screen and (max-width: 520px) {
+    #filter-settings:hover {
+        margin: 10px;
+        width: 100%;
+    }
 }
 
-.gym_popup, .raid_popup, .pokemon_popup, .quest_popup {
-	width: 200px;
-	text-align: center;
+#layer-settings ul, #filter-settings ul, #language-settings ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0.7em;
+    min-width: 26px;
+    min-height: 26px;
 }
 
-.gym_exgym{
-	position: absolute;
-	top: 10px;
+#filter-settings ul {
+    background: url('../buidl/filter.png');
+}
+
+#layer-settings ul {
+    background: url('../buidl/layers.png');
+}
+
+#language-settings ul {
+    background-repeat: no-repeat;
+    background-position: center 6px;
+    background-size: contain;
+}
+
+#language-settings .language-de {
+    background-image: url('../buidl/flags/de.png');
+}
+
+#language-settings .language-en-uk {
+    background-image: url('../buidl/flags/en-uk.png');
+}
+
+#language-settings .language-en-us {
+    background-image: url('../buidl/flags/en-us.png');
+}
+
+#layer-settings ul li, #filter-settings ul li, #language-settings ul li {
+    display: none;
+}
+
+#layer-settings:hover ul, #filter-settings:hover ul, #language-settings:hover ul {
+    background-image: none;
+}
+
+#layer-settings:hover ul li, #filter-settings:hover ul li, #language-settings:hover ul li {
+    display: block;
+}
+
+#language-settings ul li label {
+    padding-left: 30px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#filter-settings .filter-search {
+    height: 2em;
+    vertical-align: bottom;
+    border: 1px solid;
+    margin: 5px 0 0 5px;
+    width: calc(100% - 2em - 10px);
+    padding: 3px;
+    border-radius: 3px 0 0 3px;
+}
+
+#filter-settings .filter-search::placeholder {
+    text-align: center;
+    opacity: 0.3;
+}
+
+#filter-settings .filter-clear {
+    width: 2em;
+    height: 2em;
+    text-align: center;
+    padding: 0;
+    border: 1px solid;
+    margin: 0 0 0 -1px;
+    border-radius: 0 3px 3px 0;
+}
+
+#filter-settings .filter-tabs {
+    margin: 15px 15px -1px 15px;
+    z-index: 1;
+}
+
+@media only screen and (min-width: 350px) {
+    #filter-settings .filter-tabs .tab {
+        display: inline-block;
+        margin: 5px -1px 0 5px;
+        border: 1px solid;
+        padding: 3px 5px;
+        border-radius: 3px 3px 0 0;
+    }
+
+    #filter-settings .filter-tabs .tab-active {
+        border-bottom: 1px solid #FFF;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    #filter-settings .filter-tabs {
+        margin: 0;
+    }
+
+    #filter-settings .filter-tabs .tab {
+        margin: 5px;
+        border: 1px solid;
+        padding: 3px 5px;
+        border-radius: 3px;
+    }
+
+    #filter-settings .filter-tabs .tab-active {
+        background-color: #AAA;
+    }
+}
+
+#filter-settings .filter-panels {
+    border: 1px solid;
+    z-index: -1;
+    margin: -1px 5px 5px 5px;
+    padding: 10px;
+    border-radius: 3px;
+}
+
+#filter-settings .filter-panels .panel {
+    display: none;
+}
+
+#filter-settings .filter-panels .panel-active {
+    display: block;
+}
+
+.gym-popup, .raid-popup, .pokemon-popup, .quest-popup {
+    width: 200px;
+    text-align: center;
+    background-size: 200px auto !important;
+}
+
+.gym-exgym {
+    position: absolute;
+    top: 10px;
     right: 30px;
-	padding: 1px 3px;
-	background-color: #5CAFC5;
-	color: #FFF;
-	border-radius: 3px;
+    padding: 1px 3px;
+    background-color: #5CAFC5;
+    color: #FFF;
+    border-radius: 3px;
 }
 
-.gym_exgym_0, .raid_attendees_0, .raid_moves_present_0{
-	display: none;
+.gym-exgym-0, .raid-attendees-0, .raid-moves-present-0 {
+    display: none;
 }
 
-.gym_exgym_1, .raid_attendees_1, .raid_moves_present_1{
-	display: block;
+.gym-exgym-1, .raid-attendees-1, .raid-moves-present-1 {
+    display: block;
 }
 
-.gym_team_1, .gym_team_mystic {
-	background: url('../buidl/mystic_bg.png');
-    background-size: 200px;
-    background-repeat: no-repeat;
-	background-position-y: -15px;
+.gym-team-1, .gym-team-mystic {
+    background: url('../buidl/mystic_bg.png') no-repeat center -15px;
 }
 
-.gym_team_2, .gym_team_valor {
-	background: url('../buidl/valor_bg.png');
-    background-size: 200px;
-    background-repeat: no-repeat;
-	background-position-y: -15px;
+.gym-team-2, .gym-team-valor {
+    background: url('../buidl/valor_bg.png') no-repeat center -15px;
 }
 
-.gym_team_3, .gym_team_instinct {
-	background: url('../buidl/instinct_bg.png');
-    background-size: 200px;
-    background-repeat: no-repeat;
-	background-position-y: -15px;
+.gym-team-3, .gym-team-instinct {
+    background: url('../buidl/instinct_bg.png') no-repeat center -15px;
 }
 
-.gym_image, .raid_image, .pokemon_image, .quest_image {
-	height: 138px;
-	width: 138px;
-	border: 1px solid;
-	border-radius: 50%;
-	background-color: rgba(255, 255, 255, .7);
+.gym-image, .raid-image, .pokemon-image, .quest-image {
+    height: 138px;
+    width: 138px;
+    border: 1px solid;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, .7);
     overflow: hidden;
     margin: 10px auto;
 }
 
-.pokemon_image {
+.pokemon-image {
     background-image: url('../buidl/grass.png');
     background-position: bottom center;
     background-repeat: no-repeat;
 }
 
-.pokemon_tth_urgent_1{
-	color: #A00;
-	font-weight: bold;
+.pokemon-tth-urgent-1 {
+    color: #A00;
+    font-weight: bold;
 }
 
-.gym_image img, .raid_image img, .pokemon_image img, .quest_image img {
+.gym-image img, .raid-image img, .pokemon-image img, .quest-image img {
     height: 128px;
-	width: 128px;
+    width: 128px;
     margin: 5px;
-    background-size: 128px 128px;
-    background-position: center; 
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
     clip-path: circle(64px at center);
+    object-fit: cover;
+    object-position: center center;
 }
 
-.gym_info, .raid_info, .pokemon_info, .quest_info {
-	background-color: rgba(255, 255, 255, .9);
-	padding: 3px;
-	border-radius: 3px;
-	border: 1px solid;
+.gym-info, .raid-info, .pokemon-info, .quest-info {
+    background-color: rgba(255, 255, 255, .9);
+    padding: 3px;
+    border-radius: 3px;
+    border: 1px solid;
 }
 
-.gym_name, .raid_gym_name, .raid_boss, .pokemon_name, .quest_stop_name {
-	font-weight: bold;
-	font-size: 1.3em;
+.gym-name, .raid-gym-name, .raid-boss, .pokemon-name, .quest-stop-name, .quest-reward {
+    font-weight: bold;
+    font-size: 1.3em;
     margin-top: 10px;
 }
 
-.raid_level{
+.raid-level {
     padding: 0;
     margin: 5px auto;
 }
 
-.raid_level_X:before {
+.raid-level-X:before {
     padding: 1px 3px;
-	background-color: #5CAFC5;
-	color: #FFF;
-	border-radius: 3px;
+    background-color: #5CAFC5;
+    color: #FFF;
+    border-radius: 3px;
     content: 'EX RAID';
 }
 
-.raid_level_1:before {
+.raid-level-1:before {
     color: #FFDF65;
     font-size: xx-large;
     content: '\272A';
 }
 
-.raid_level_2:before {
+.raid-level-2:before {
     color: #FFDF65;
     font-size: xx-large;
     content: '\272A \272A';
 }
 
-.raid_level_3:before {
+.raid-level-3:before {
     color: #FFDF65;
     font-size: xx-large;
     content: '\272A \272A \272A';
 }
 
-.raid_level_4:before {
+.raid-level-4:before {
     color: #FFDF65;
     font-size: xx-large;
     content: '\272A \272A \272A \272A';
 }
 
-.raid_level_5:before {
+.raid-level-5:before {
     color: #FFDF65;
     font-size: xx-large;
     content: '\272A \272A \272A \272A \272A';
 }
 
-.raid_time:before {
+.raid-time:before {
     content: '\23F0';
 }
 
@@ -182,24 +313,24 @@ hr {
     margin: 10px auto;
 }
 
-.raid_attendees:before {
+.raid-attendees:before {
     content: '\1F465';
 }
 
-.raid_attendees p {
+.raid-attendees p {
     margin: 0;
 }
 
-.raid_attendees p:before{
+.raid-attendees p:before {
     content: '\21B3';
 }
 
-.quest_image{
-	position: relative;
+.quest-image {
+    position: relative;
 }
 
-.quest_reward_amount{         
-	position: absolute;
+.quest-reward-amount {
+    position: absolute;
     top: 45%;
     font-size: large;
     text-shadow: black 0 0 0.2em;
@@ -210,6 +341,24 @@ hr {
     text-align: right;
 }
 
+.mapboxgl-popup {
+    z-index: 2;
+}
+
+.mapboxgl-popup-content {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
 .mapboxgl-popup-close-button {
     font-size: xx-large;
+}
+
+.checkbox-container {
+    min-width: 33%;
+    display: inline-block;
+}
+
+.checkbox-container label {
+    display: inline-block;
+    padding: 5px;
 }
