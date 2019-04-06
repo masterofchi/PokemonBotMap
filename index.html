@@ -1,92 +1,36 @@
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Raid Map</title>
-        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-        <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet" />
-        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-        
-        <link href="css/style.css" rel="stylesheet" />
-        <script type="text/javascript" src="js/constants.js.php"></script>
-        <script type="text/javascript" src="js/map.js"></script>
-    </head>
-    <body>
-        <div id="map">
-	        <div class="mapboxgl-ctrl-top-right">
-		        <div id="layer_settings" class="mapboxgl-ctrl mapboxgl-ctrl-group">
-		        	<ul>
-		        		<li>
-				        	<input id="style_streets" value="streets-v10" type="radio" name="style" checked="checked" />
-				        	<label for="style_streets">Streets</label>
-			        	</li>
-		        		<li>
-				        	<input id="style_outdoors" value="outdoors-v10" type="radio" name="style" />
-				        	<label for="style_outdoors">Outdoors</label>
-			        	</li>
-		        		<li>
-				        	<input id="style_light" value="light-v9" type="radio" name="style" />
-				        	<label for="style_light">Light</label>
-			        	</li>
-		        		<li>
-				        	<input id="style_dark" value="dark-v9" type="radio" name="style" />
-				        	<label for="style_dark">Dark</label>
-			        	</li>
-		        		<li>
-				        	<input id="style_satellite" value="satellite-v9" type="radio" name="style" />
-				        	<label for="style_satellite">Sattelite</label>
-			        	</li>
-		        		<li>
-				        	<input id="style_satellite_streets" value="satellite-streets-v10" type="radio" name="style" />
-				        	<label for="style_satellite_streets">Sattelite Streets</label>
-			        	</li>
-			        	<li>
-			        		<hr />
-			        	</li>
-			        	<li>
-			        		<input id="layer_exraids" value="show_exraids" type="checkbox" name="layer_exraids" checked="checked" />
-			        		<label for="layer_exraids">EX Raids</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_raids5" value="show_raids5" type="checkbox" name="layer_raids5" checked="checked" />
-			        		<label for="layer_raids5">Level 5</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_raids4" value="show_raids4" type="checkbox" name="layer_raids4" checked="checked" />
-			        		<label for="layer_raids4">Level 4</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_raids3" value="show_raids3" type="checkbox" name="layer_raids3" checked="checked" />
-			        		<label for="layer_raids3">Level 3</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_raids2" value="show_raids2" type="checkbox" name="layer_raids2" checked="checked" />
-			        		<label for="layer_raids2">Level 2</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_raids1" value="show_raids1" type="checkbox" name="layer_raids1" checked="checked" />
-			        		<label for="layer_raids1">Level 1</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_exgyms" value="show_exgyms" type="checkbox" name="layer_exgyms" checked="checked" />
-			        		<label for="layer_exgyms">EX Gyms</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_gyms" value="show_gyms" type="checkbox" name="layer_gyms" checked="checked" />
-			        		<label for="layer_gyms">Other Gyms</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_pokemon" value="show_pokemon" type="checkbox" name="layer_pokemon" checked="checked" />
-			        		<label for="layer_pokemon">Pokémon</label>
-			        	</li>
-			        	<li>
-			        		<input id="layer_quests" value="show_quests" type="checkbox" name="layer_quests" checked="checked" />
-			        		<label for="layer_quests">Quests</label>
-			        	</li>
-		        	</ul>
-		        </div>
-	        </div>
-        </div>
-    </body>
+<html lang="de_DE@utf8">
+<head>
+    <title>Raid Map</title>
+
+    <meta charset="utf-8"/>
+    <meta content="initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"/>
+
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css" rel="stylesheet"/>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js"></script>
+
+    <link href="css/style.css" rel="stylesheet"/>
+    <script src="js/pogomap/settings.js" type="text/javascript"></script>
+    <script src="js/pogomap/ajax.js" type="text/javascript"></script>
+    <script src="js/pogomap/debounce.js" type="text/javascript"></script>
+    <script src="js/pogomap/map.js" type="text/javascript"></script>
+    <script src="js/pogomap/iconloader.js" type="text/javascript"></script>
+    <script src="js/pogomap/languagecontrol.js" type="text/javascript"></script>
+    <script src="js/pogomap/layerscontrol.js" type="text/javascript"></script>
+    <script src="js/pogomap/filtercontrol.js" type="text/javascript"></script>
+    <script src="js/pogomap/template.js" type="text/javascript"></script>
+    <script src="js/pogomap/templatehelper.js" type="text/javascript"></script>
+    <script src="js/pogomap/translator.js" type="text/javascript"></script>
+
+    <script src="js/layers/raidslayer.js" type="text/javascript"></script>
+    <script src="js/layers/gymslayer.js" type="text/javascript"></script>
+    <script src="js/layers/questslayer.js" type="text/javascript"></script>
+    <script src="js/layers/pokemonlayer.js" type="text/javascript"></script>
+
+    <script src="js/constants.js.php" type="text/javascript"></script>
+    <script src="js/config.js" type="text/javascript"></script>
+    <script src="js/index.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="map"></div>
+</body>
 </html>

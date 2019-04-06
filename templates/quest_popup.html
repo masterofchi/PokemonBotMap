@@ -1,17 +1,23 @@
-<div class="quest_popup">
-	<div class="quest_image">
-        <span class="quest_reward_amount">##reward_amount##</span>
-        <img class="quest_reward_image" src="##reward_image##" style="background-image: url('##url##');" />
+<div class="quest-popup">
+    <div class="quest-image">
+        <span class="quest-reward-amount">##reward_amount##</span>
+        <img alt="##reward_amount####reward_name##" class="quest-reward-image" src="##reward_image##"
+             style="background-image: url('##url##');"/>
     </div>
-    <div class="quest_info">
-    	<div class="quest_stop_name">
-    		##name##
-    	</div>
-        <div class="quest_navigation">
-            <a href="https://www.google.com/maps/search/?api=1&amp;query=##lat##,##lon##" target="_blank" title="Finde ##name## auf Google Maps">Zeig mir den Weg dorthin</a>
+    <div class="quest-info">
+        <div class="quest-stop-name">
+            ##name##
         </div>
-    	<div class="quest_task">
-    		##quest_task##
-    	</div>
+        <div class="quest-navigation">
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=##lat##,##lon##" target="_blank"
+               title="Finde ##name## auf Google Maps">Zeig mir den Weg dorthin</a>
+        </div>
+        <hr/>
+        <div class="quest-reward">
+            ##reward_amount####reward_name##
+        </div>
+        <div class="quest-task">
+            ##quest_task##
+        </div>
     </div>
 </div>
