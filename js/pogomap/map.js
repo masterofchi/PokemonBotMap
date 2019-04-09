@@ -172,8 +172,14 @@
 
             settings.getLayers().forEach(layerName => {
                 const layerObject = this.layers.filter(layer => layer.name === layerName)[0];
-                const url = layerObject.source + (constants.use_geo_boundary ? '?geoBoundary=' + getGeoBoundaryString() : '');
-                promises.push(pogomap.Ajax.getJSON(url));
+                const url = layerObject.source;
+
+                if (constants.use_geo_boundary) {
+                    promises.push(pogomap.Ajax.postJSON('getdata.php?layer=' + layerName, {'geoBoundary': getGeoBoundary()}));
+                } else {
+                    promises.push(pogomap.Ajax.getJSON(url));
+                }
+
                 layerObjects.push(layerObject);
             }, this);
 
@@ -185,10 +191,6 @@
                 this.updateFeatures();
             });
         }).bind(this);
-
-        let getGeoBoundaryString = function () {
-            return JSON.stringify(getGeoBoundary());
-        };
 
         let getGeoBoundary = (function () {
             const canvas = this.map.getCanvas();

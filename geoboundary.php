@@ -37,7 +37,7 @@ function getItemsInBoundary($items, $boundary)
 
         // if the given point is on the left side of every edge, the point resides within the boundary
         foreach ($edges as $edge) {
-            $itemWithinBoundary = $edge->isPointLeftOfEdge($item->lon, $item->lat) && $itemWithinBoundary;
+            $itemWithinBoundary = $edge->isPointLeftOfEdge($item['lon'], $item['lat']) && $itemWithinBoundary;
         }
 
         return $itemWithinBoundary;
