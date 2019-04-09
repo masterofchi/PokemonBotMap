@@ -31,16 +31,8 @@ try {
     exit;
 }
 
-if (defined('USE_GEO_BOUNDARY') && USE_GEO_BOUNDARY && !empty($_GET['geoBoundary'])) {
-    require_once('geoboundary.php');
-
-    $boundary = json_decode($_GET['geoBoundary']);
-    $result = getItemsInBoundary($rows, $boundary);
-} else {
-    $result = $rows;
+if (!defined('PRINT_DATA') || PRINT_DATA) {
+    print json_encode($rows);
 }
 
-print json_encode($result);
-
 $dbh = null;
-?>

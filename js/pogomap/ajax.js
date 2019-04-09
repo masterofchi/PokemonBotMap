@@ -16,4 +16,17 @@
             return response.json();
         });
     };
+
+    pogomap.Ajax.postJSON = function (url, data) {
+        return fetch(url, {
+            'method': 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            return response.json();
+        });
+    };
 }(window.pogomap = window.pogomap || {}));
