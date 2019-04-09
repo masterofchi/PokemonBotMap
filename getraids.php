@@ -67,6 +67,8 @@ $sql_raiders = "
     ORDER BY attendance.raid_id, attendance.attend_time ASC";
 
 $rows = array();
+$attendees = array();
+
 try {
 
     $result = $dbh->query($sql_raids);
