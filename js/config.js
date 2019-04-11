@@ -2,32 +2,32 @@ const allStyles = [
     {
         'name': 'streets',
         'style': 'streets-v10',
-        'label': 'Stra&szlig;en'
+        'label': '??STREETS??'
     },
     {
         'name': 'outdoors',
         'style': 'outdoors-v10',
-        'label': 'Stra&szlig;en und Wege'
+        'label': '??OUTDOORS??'
     },
     {
         'name': 'light',
         'style': 'light-v9',
-        'label': 'Hell'
+        'label': '??LIGHT??'
     },
     {
         'name': 'dark',
         'style': 'dark-v9',
-        'label': 'Dunkel'
+        'label': '??DARK??'
     },
     {
         'name': 'satellite',
         'style': 'satellite-v9',
-        'label': 'Satellit'
+        'label': '??SATELLITE??'
     },
     {
         'name': 'satellite_streets',
         'style': 'satellite-streets-v10',
-        'label': 'Satellit und Stra&szlig;en'
+        'label': '??SATELLITE_STREETS??'
     }
 ];
 
@@ -35,28 +35,28 @@ const allLayers = [
     {
         'name': 'raids',
         'class': 'RaidsLayer',
-        'label': 'Raids',
+        'label': '??RAIDS??',
         'source': 'getraids.php',
         'zIndex': 1
     },
     {
         'name': 'gyms',
         'class': 'GymsLayer',
-        'label': 'Arenen',
+        'label': '??GYMS??',
         'source': 'getgyms.php',
         'zIndex': 0
     },
     {
         'name': 'quests',
         'class': 'QuestsLayer',
-        'label': 'Feldforschungen',
+        'label': '??QUESTS??',
         'source': 'getquest.php',
         'zIndex': 0
     },
     {
         'name': 'pokemon',
         'class': 'PokemonLayer',
-        'label': 'Pok&eacute;mon',
+        'label': '??POKEMON??',
         'source': 'getpokemon.php',
         'zIndex': 0
     }
@@ -65,89 +65,89 @@ const allLayers = [
 const allFilters = [
     {
         'layer': 'raids',
-        'label': 'Raids',
+        'label': '??RAIDS??',
         'filters': [
             {
                 'name': 'raidsX',
-                'label': 'Ex-Raids'
+                'label': '??EX_RAIDS??'
             },
             {
                 'name': 'raids1',
-                'label': 'Level 1 Raids'
+                'label': '??LEVEL_1_RAIDS??'
             },
             {
                 'name': 'raids2',
-                'label': 'Level 2 Raids'
+                'label': '??LEVEL_2_RAIDS??'
             },
             {
                 'name': 'raids3',
-                'label': 'Level 3 Raids'
+                'label': '??LEVEL_3_RAIDS??'
             },
             {
                 'name': 'raids4',
-                'label': 'Level 4 Raids'
+                'label': '??LEVEL_4_RAIDS??'
             },
             {
                 'name': 'raids5',
-                'label': 'Level 5 Raids'
+                'label': '??LEVEL_5_RAIDS??'
             }
         ]
     },
     {
         'layer': 'gyms',
-        'label': 'Arenen',
+        'label': '??GYMS??',
         'filters': [
             {
                 'name': 'gymsX',
-                'label': 'Ex-Raid Arenen'
+                'label': '??EX_RAID_GYMS??'
             },
             {
                 'name': 'gymsOther',
-                'label': 'andere Arenen'
+                'label': '??OTHER_GYMS??'
             },
             {
                 'name': 'gymsFull',
-                'label': 'volle Arenen'
+                'label': '??FULL_GYMS??'
             },
             {
                 'name': 'gymsMystic',
-                'label': 'Team Weisheit'
+                'label': '??TEAM_MYSTIC??'
             },
             {
                 'name': 'gymsValor',
-                'label': 'Team Wagemut'
+                'label': '??TEAM_VALOR??'
             },
             {
                 'name': 'gymsInstinct',
-                'label': 'Team Intuition'
+                'label': '??TEAM_INSTINCT??'
             }
         ]
     },
     {
         'layer': 'quests',
-        'label': 'Feldforschungen',
+        'label': '??QUESTS??',
         'filters': [
             {
                 'name': 'questsItems',
-                'label': 'Item Belohnung'
+                'label': '??ITEM_REWARD??'
             },
             {
                 'name': 'questsStardust',
-                'label': 'Sternenstaub Belohnung'
+                'label': '??STARDUST_REWARD??'
             },
             {
                 'name': 'questsPokemon',
-                'label': 'Pok&eacute;mon Belohnung'
+                'label': '??POKEMON_REWARD??'
             }
         ]
     },
     {
         'layer': 'pokemon',
-        'label': 'Pok&eacute;mon',
+        'label': '??POKEMON??',
         'filters': [
             {
                 'name': 'pokemonUrgent',
-                'label': 'Unter 5 Minuten'
+                'label': '??LESS_THAN_FIVE_MINUTES??'
             }
         ]
     }
@@ -158,14 +158,14 @@ const allLanguages = [
         'name': 'de',
         'label': 'Deutsch'
     },
-    /*{
+    {
         'name': 'en-uk',
         'label': 'British English'
     },
     {
         'name': 'en-us',
         'label': 'American English'
-    }*/
+    }
 ];
 
 const controls = {

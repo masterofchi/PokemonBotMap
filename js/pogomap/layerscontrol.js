@@ -31,7 +31,7 @@
 
                 const label = document.createElement('label');
                 label.htmlFor = itemId;
-                label.innerHTML = style.label;
+                label.innerHTML = pogomap.TemplateHelper.replaceStaticPlaceholders(style.label, pogomap.Translator.get);
 
                 listItem.appendChild(radioButton);
                 listItem.appendChild(label);
@@ -61,7 +61,7 @@
 
                 const label = document.createElement('label');
                 label.htmlFor = itemId;
-                label.innerHTML = layer.label;
+                label.innerHTML = pogomap.TemplateHelper.replaceStaticPlaceholders(layer.label, pogomap.Translator.get);
 
                 listItem.appendChild(checkBox);
                 listItem.appendChild(label);

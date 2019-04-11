@@ -8,7 +8,7 @@
 
         this.load = function () {
             return pogomap.Ajax.get(url).then(data => {
-                template = data;
+                template = pogomap.TemplateHelper.replaceStaticPlaceholders(data, pogomap.Translator.get);
                 loadingComplete = true;
             });
         };
@@ -19,7 +19,7 @@
 
                 for (const key in objectToRender) {
                     if (objectToRender.hasOwnProperty(key)) {
-                        result = pogomap.TemplateHelper.replacePlaceholders(result, key, objectToRender[key]);
+                        result = pogomap.TemplateHelper.replaceDynamicPlaceholders(result, key, objectToRender[key]);
                     }
                 }
 

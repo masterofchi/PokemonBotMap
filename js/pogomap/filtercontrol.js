@@ -60,7 +60,7 @@
                     tab.classList.add('tab-active');
                 }
 
-                tab.innerHTML = filterGroup.label;
+                tab.innerHTML = pogomap.TemplateHelper.replaceStaticPlaceholders(filterGroup.label, pogomap.Translator.get);
 
                 tab.addEventListener('click', this.onTabClick);
 
@@ -92,7 +92,7 @@
 
                     const label = document.createElement('label');
                     label.htmlFor = checkBox.id;
-                    label.innerHTML = filter.label;
+                    label.innerHTML = pogomap.TemplateHelper.replaceStaticPlaceholders(filter.label, pogomap.Translator.get);
 
                     span.appendChild(checkBox);
                     span.appendChild(label);

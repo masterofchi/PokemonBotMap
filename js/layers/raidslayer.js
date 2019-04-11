@@ -33,6 +33,7 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
+
             raid.ts_end_string = new Date(raid.ts_end * 1000).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -42,20 +43,20 @@
 
             if (raid.t_left > 3600) {
                 const hours = Math.floor(raid.t_left / 3600);
-                remaining.push(hours + ' Stunde' + (hours !== 1 ? 'n' : ''));
+                remaining.push(hours + ' ' + (hours === 1 ? pogomap.Translator.get('HOUR') : pogomap.Translator.get('HOURS')));
                 raid.t_left -= hours * 3600;
             }
 
             if (raid.t_left > 60) {
                 const minutes = Math.floor(raid.t_left / 60);
-                remaining.push(minutes + ' Minute' + (minutes !== 1 ? 'n' : ''));
+                remaining.push(minutes + ' ' + (minutes === 1 ? pogomap.Translator.get('MINUTE') : pogomap.Translator.get('MINUTES')));
                 raid.t_left -= minutes * 60;
             }
 
             const seconds = raid.t_left;
-            remaining.push(seconds + ' Sekunde' + (seconds !== 1 ? 'n' : ''));
+            remaining.push(seconds + ' ' + (seconds === 1 ? pogomap.Translator.get('SECOND') : pogomap.Translator.get('SECONDS')));
 
-            raid.t_left_string = remaining.join(', ');
+            raid.time_remaining = remaining.join(', ');
 
             if (raid.raiders) {
                 raid.raiders_set = 1;

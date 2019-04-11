@@ -38,10 +38,10 @@
 
             if (Number(timeParts[0]) === 0 && timeParts[1] < 5) {
                 pokemon.urgent = 1;
-                pokemon.tth_string = pogomap.Translator.get('BELOW_FIVE_MINUTES');
+                pokemon.tth_string = pogomap.Translator.get('LESS_THAN_FIVE_MINUTES');
             } else {
                 pokemon.urgent = 0;
-                pokemon.tth_string = pogomap.TemplateHelper.replacePlaceholders(pogomap.Translator.get('TIME_REMAINING'), 'time_remaining', tthParts.join(', '));
+                pokemon.tth_string = pogomap.TemplateHelper.replaceDynamicPlaceholders(pogomap.Translator.get('TIME_REMAINING'), 'time_remaining', tthParts.join(', '));
             }
 
             return pokemon;
